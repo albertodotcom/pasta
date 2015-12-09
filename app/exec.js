@@ -4,7 +4,7 @@ import path from 'path';
 
 class Exec {
   copy({from, to}) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       let self = this;
 
       let files = [];
