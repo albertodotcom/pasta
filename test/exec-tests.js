@@ -31,8 +31,8 @@ function listFilePathInFolder(folder) {
 describe('exec', () => {
   describe('copy', () => {
     it('copies all the files from a folder to another', () => {
-      const testAssestsFolder = path.join(__dirname, './assets/init');
-      const tmpFolder = path.join(__dirname, '../tmp/init');
+      let testAssestsFolder = path.join(__dirname, './assets/init');
+      let tmpFolder = path.join(__dirname, '../tmp/init');
 
       let expectedFiles = [
         path.join(tmpFolder, 'package.json'),
