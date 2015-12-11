@@ -1,32 +1,19 @@
-import fs from 'fs-extra';
-import through2 from 'through2';
-import path from 'path';
+var Q = require('q');
+var path = require('path');
+
+var Utils = require('./utils');
 
 class Exec {
-  copy({from, to}) {
-    return new Promise((resolve) => {
-      let self = this;
+  copy({from, to, transform}) {
+    let flow = [
+      Utils.ls,
+      Utils.filterFiles,
+      Utils.copyAndTransform,
+    ];
 
-      let files = [];
-
-      var writeFile = through2.obj(function (item, enc, next) {
-        if (!item.stats.isDirectory()) {
-          fs.createOutputStream(self.outputFilePath(from, to, item.path));
-          this.push(item);
-        }
-
-        next();
-      });
-
-      fs.walk(from)
-      .pipe(writeFile)
-      .on('data', (item) => {
-        files.push(item.path);
-      })
-      .on('end', function () {
-        resolve();
-      });
-    });
+    return flow.reduce(function (soFar, f) {
+      return soFar.then(f);
+    }, Q({from, to, transform}));
   }
 
   outputFilePath(originFolder, destFolder, oldFilePath) {
@@ -34,4 +21,4 @@ class Exec {
   }
 }
 
-export default new Exec();
+module.exports = new Exec();

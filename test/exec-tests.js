@@ -2,8 +2,15 @@ import { expect } from 'chai';
 import path from 'path';
 import fs from 'fs-extra';
 import through2 from 'through2';
+import prequire from 'proxyquire';
+var sinon = require('sinon');
 
-import exec from '../app/exec';
+let UtilsStub = {
+};
+
+let exec = prequire('../app/exec', {
+  './utils': UtilsStub,
+});
 
 let excludeFolders = through2.obj(function (item, enc, next) {
   if (!item.stats.isDirectory()) this.push(item);
@@ -30,10 +37,32 @@ function listFilePathInFolder(folder) {
 
 describe('exec', () => {
   describe('copy', () => {
-    it('copies all the files from a folder to another', () => {
-      let testAssestsFolder = path.join(__dirname, './assets/init');
-      let tmpFolder = path.join(__dirname, '../tmp/init');
+    const testAssestsFolder = path.join(__dirname, './assets/init');
+    const tmpFolder = path.join(__dirname, '../tmp/init');
+    let originalStub = Object.assign({}, UtilsStub);
 
+    afterEach(() => {
+      UtilsStub = originalStub;
+    });
+
+    it('calls ls, filterFiles, copyAndTransform form Utils', () => {
+      UtilsStub.ls = sinon.spy();
+      UtilsStub.filterFiles = sinon.spy();
+      UtilsStub.copyAndTransform = sinon.spy();
+
+      return exec.copy({
+        from: testAssestsFolder,
+        to: tmpFolder,
+      })
+      .then(() => {
+        expect(UtilsStub.ls.called).to.true;
+        expect(UtilsStub.filterFiles.calledOnce).to.true;
+        expect(UtilsStub.copyAndTransform.calledOnce).to.true;
+      });
+
+    });
+
+    it('creates all the files found in a folder to destination one', () => {
       let expectedFiles = [
         path.join(tmpFolder, 'package.json'),
       ];
