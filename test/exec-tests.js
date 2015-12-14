@@ -55,7 +55,7 @@ describe('exec', () => {
         to: tmpFolder,
       })
       .then(() => {
-        expect(UtilsStub.ls.called).to.true;
+        expect(UtilsStub.ls.calledOnce).to.true;
         expect(UtilsStub.filterFiles.calledOnce).to.true;
         expect(UtilsStub.copyAndTransform.calledOnce).to.true;
       });
