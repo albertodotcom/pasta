@@ -4,17 +4,60 @@ let path = require('path');
 let Utils = require('../app/utils');
 
 const testAssestsFolder = path.join(__dirname, './assets/init');
-const filesAndFolders = [
+const FILES_AND_FOLDERS_PATH = [
   '/Users/aforni/Projects/react-cli/test/assets/init',
   '/Users/aforni/Projects/react-cli/test/assets/init/package.json',
 ];
 
 describe('Utils', () => {
-  describe('ls', () => {
-    it('list the in init folder', () => {
+  describe('.ls', () => {
+    it('resolves with and object that contains the key "filesAndFolders"', () => {
       return Utils.ls({from: testAssestsFolder})
-      .then((filesAndDir) => {
-        expect(filesAndDir).to.deep.equal(filesAndFolders);
+      .then(({filesAndFolders}) => {
+        expect(filesAndFolders).to.deep.equal(FILES_AND_FOLDERS_PATH);
+      });
+    });
+  });
+
+  describe('.filterFiles', () => {
+    it('returns only package.json', () => {
+      return Utils.filterFiles({filesAndFolders: FILES_AND_FOLDERS_PATH})
+      .then(({files}) => {
+        expect(files).to.deep.equal([FILES_AND_FOLDERS_PATH[1]]);
+      });
+    });
+  });
+
+  describe('.readFile', () => {
+    it('return a file content', () => {
+      let expectFileContent = JSON.stringify({
+        'name': 'react-cli',
+        'version': '0.0.1',
+        'description': 'Terminal App for creating react applications',
+        'main': 'index.js',
+        'scripts': {
+          'test': 'mocha',
+        },
+        'keywords': [
+          'react',
+          'cli',
+          'node',
+        ],
+        'author': 'Alberto Forni',
+        'license': 'ISC',
+        'devDependencies': {
+          'chai': '^3.4.1',
+          'mocha': '^2.3.4',
+        },
+        'dependencies': {
+          'babel-core': '^6.2.1',
+          'babel-preset-es2015': '^6.1.18',
+        },
+      }, null, 2) + '\n';
+
+      return Utils.readFile(FILES_AND_FOLDERS_PATH[1])
+      .then((fileContent) => {
+        expect(fileContent).to.equal(expectFileContent);
       });
     });
   });
