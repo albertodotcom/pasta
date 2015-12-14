@@ -63,6 +63,14 @@ const Utils = {
       });
     });
   },
+
+  transform(data, transformer) {
+    return transformer(data)
+    .then((data) => {
+      return Promise.resolve(data);
+    });
+  },
+
 };
 
 module.exports = Utils;

@@ -71,4 +71,17 @@ describe('Utils', () => {
       });
     });
   });
+
+  describe('.transform', () => {
+    it('convert all the text to uppercase', () => {
+      let toUpperCase = (data) => {
+        return new Promise((res) => res(data.toUpperCase()));
+      };
+
+      return Utils.transform('hello\nworld!!', toUpperCase)
+      .then((data) => {
+        expect(data).to.equal('HELLO\nWORLD!!');
+      });
+    });
+  });
 });
