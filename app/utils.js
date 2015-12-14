@@ -53,6 +53,16 @@ const Utils = {
 
     });
   },
+
+  writeFile(filePath, data) {
+    return new Promise((resolve, reject) => {
+      fs.outputFile(filePath, data, (err) => {
+        if (err != null) return reject(err);
+
+        resolve(true);
+      });
+    });
+  },
 };
 
 module.exports = Utils;
