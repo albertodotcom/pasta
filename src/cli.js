@@ -1,5 +1,6 @@
-import chalk from 'chalk';
-import parseArgv from 'minimist';
+var chalk = require('chalk');
+var parseArgv = require('minimist');
+var exec = require('./exec.js');
 
 let usage = `
   usage: pasta [options] [command]
@@ -23,6 +24,22 @@ let CLI = {
   main(argv) {
     let opts = parseArgv(argv);
     let cmd = opts._[2];
+
+    try {
+      exec[cmd](opts._[3])
+      .catch((error) => {
+        console.log(error.stack);
+        process.exit(1);
+      });
+    } catch(error) {
+      if (error.toString() === 'TypeError: exec[cmd] is not a function') {
+        console.log(`'${ cmd }' - no such command`);
+        console.log(usage);
+        process.exit(1);
+      } else {
+        throw(error);
+      }
+    }
 
     if (cmd === 'help' || !cmd) {
       console.log(usage);

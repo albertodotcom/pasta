@@ -85,14 +85,14 @@ describe('exec', () => {
     });
   });
 
-  describe('new', () => {
+  describe('.new', () => {
     it('copies the files from the `from` folder to the `dest` folder and execute a script', () => {
       let from = TEMPLATES_FOLDER;
       let to = tmpFolder;
 
       sinon.stub(exec, 'copy').returns(Promise.resolve());
 
-      return exec.new(tmpFolder)
+      return exec.new('/tmp/init')
       .then(() => {
         let execCopyArgs = exec.copy.args[0][0];
         expect(execCopyArgs.from).to.equal(path.join(from, 'new'));
