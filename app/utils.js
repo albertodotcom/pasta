@@ -41,7 +41,19 @@ const Utils = {
   },
 
   copyAndTransform(data) {
-    return data;
+    let {files, transform, from, to} = data;
+
+    return when.all(files.map((file) => {
+      return Utils.readFile(file)
+      .then((fileContent) => {
+        return Utils.transform(fileContent, transform);
+      })
+      .then((transformedFileContent) => {
+        let newFilePath = Utils.outputFilePath(from, to, file);
+        return Utils.writeFile(newFilePath, transformedFileContent);
+      });
+    }))
+    .then(() => true);
   },
 
   readFile(filePath) {

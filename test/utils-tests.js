@@ -8,6 +8,7 @@ const FILES_AND_FOLDERS_PATH = [
   '/Users/aforni/Projects/react-cli/test/assets/init',
   '/Users/aforni/Projects/react-cli/test/assets/init/package.json',
 ];
+const tmpFolder = path.join(__dirname, '../tmp/init');
 
 const FileContent = JSON.stringify({
   'name': 'react-cli',
@@ -34,6 +35,10 @@ const FileContent = JSON.stringify({
   },
 }, null, 2) + '\n';
 
+let toUpperCase = (data) => {
+  return new Promise((res) => res(data.toUpperCase()));
+};
+
 
 describe('Utils', () => {
   describe('.ls', () => {
@@ -50,6 +55,26 @@ describe('Utils', () => {
       return Utils.filterFiles({filesAndFolders: FILES_AND_FOLDERS_PATH})
       .then(({files}) => {
         expect(files).to.deep.equal([FILES_AND_FOLDERS_PATH[1]]);
+      });
+    });
+  });
+
+  describe('.copyAndTransform', () => {
+    it('calls readFile, transform and writeFile for each file', () => {
+      let data = {
+        from: testAssestsFolder,
+        to: tmpFolder,
+        files: FILES_AND_FOLDERS_PATH.slice(1),
+        transform: (fileContent) => {
+          return new Promise((res) => {
+            return res(fileContent);
+          });
+        },
+      };
+
+      return Utils.copyAndTransform(data)
+      .then((done) => {
+        expect(done).to.true;
       });
     });
   });
@@ -74,10 +99,6 @@ describe('Utils', () => {
 
   describe('.transform', () => {
     it('convert all the text to uppercase', () => {
-      let toUpperCase = (data) => {
-        return new Promise((res) => res(data.toUpperCase()));
-      };
-
       return Utils.transform('hello\nworld!!', toUpperCase)
       .then((data) => {
         expect(data).to.equal('HELLO\nWORLD!!');
