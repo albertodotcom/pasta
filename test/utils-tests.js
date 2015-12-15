@@ -1,7 +1,7 @@
 let { expect } = require('chai');
 let path = require('path');
 
-let Utils = require('../app/utils');
+let Utils = require('../src/utils');
 
 const testAssestsFolder = path.join(__dirname, './assets/init');
 const FILES_AND_FOLDERS_PATH = [

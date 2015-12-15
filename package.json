@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "description": "Terminal App for creating react applications",
   "main": "index.js",
+  "bin": {
+    "pasta": "./bin/pasta"
+  },
   "scripts": {
+    "prepublish": "babel src --out-dir lib",
     "test": "mocha --compilers js:babel-core/register --recursive",
     "test-watch": "mocha --compilers js:babel-core/register --recursive --watch"
   },

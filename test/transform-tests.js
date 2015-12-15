@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import stream from 'stream';
 import sinon from 'sinon';
 
-import Transform from '../app/transform';
+import Transform from '../src/transform';
 
 let readStream = () => {
   var s = new stream.Readable();

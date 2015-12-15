@@ -8,7 +8,7 @@ var sinon = require('sinon');
 let UtilsStub = {
 };
 
-let exec = prequire('../app/exec', {
+let exec = prequire('../src/exec', {
   './utils': UtilsStub,
 });
 
