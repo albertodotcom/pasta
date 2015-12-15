@@ -1,7 +1,13 @@
 let { expect } = require('chai');
 let path = require('path');
+let sinon = require('sinon');
+let prequire = require('proxyquire');
 
-let Utils = require('../src/utils');
+let shellStub = {};
+
+let Utils = prequire('../src/utils', {
+  'shelljs': shellStub,
+});
 
 const testAssestsFolder = path.join(__dirname, './assets/init');
 const FILES_AND_FOLDERS_PATH = [
@@ -118,4 +124,14 @@ describe('Utils', () => {
     });
   });
 
+  describe('executeScript', () => {
+    it('calls shell.exec with the passed params', () => {
+      sinon.stub(shellStub, 'exec').returns({code: 0});
+
+      let script = 'echo hello';
+
+      let result = Utils.executeScript(script);
+      expect(result).to.true;
+    });
+  });
 });
