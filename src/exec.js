@@ -1,6 +1,16 @@
 var when = require('when');
+var path = require('path');
 
 var Utils = require('./utils');
+
+const SCRIPT = 'echo "pasta" ; echo "pizza"';
+const FROM = path.join(__dirname, '..', 'templates');
+const TRANSFORM = () => {
+  return new Promise((res) => {
+    console.log('transform');
+    res(data);
+  });
+};
 
 class Exec {
   copy({from, to, transform}) {
@@ -13,6 +23,19 @@ class Exec {
     return flow.reduce(function (soFar, f) {
       return soFar.then(f);
     }, when({from, to, transform}));
+  }
+
+  new(destFolder) {
+    let execTrain = {
+      from: path.join(FROM, 'new'),
+      to: destFolder,
+      transform: TRANSFORM,
+    };
+
+    return this.copy(execTrain)
+    .then(() => {
+      return Utils.executeScript(SCRIPT);
+    });
   }
 }
 

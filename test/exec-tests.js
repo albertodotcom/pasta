@@ -6,6 +6,7 @@ import prequire from 'proxyquire';
 var sinon = require('sinon');
 
 let UtilsStub = {
+  executeScript: sinon.stub().returns(true),
 };
 
 let exec = prequire('../src/exec', {
@@ -16,6 +17,12 @@ let excludeFolders = through2.obj(function (item, enc, next) {
   if (!item.stats.isDirectory()) this.push(item);
   next();
 });
+
+const testAssestsFolder = path.join(__dirname, './assets/init');
+const TEMPLATES_FOLDER = path.join(__dirname, '../templates/');
+const tmpFolder = path.join(__dirname, '../tmp/init');
+
+const SCRIPT = 'echo "pasta" ; echo "pizza"';
 
 function listFilePathInFolder(folder) {
   return new Promise((resolve, reject) => {
@@ -37,8 +44,6 @@ function listFilePathInFolder(folder) {
 
 describe('exec', () => {
   describe('copy', () => {
-    const testAssestsFolder = path.join(__dirname, './assets/init');
-    const tmpFolder = path.join(__dirname, '../tmp/init');
     let originalStub = Object.assign({}, UtilsStub);
 
     afterEach(() => {
@@ -76,6 +81,24 @@ describe('exec', () => {
       })
       .then((resultFiles) => {
         expect(resultFiles).to.deep.equal(expectedFiles);
+      });
+    });
+  });
+
+  describe('new', () => {
+    it('copies the files from the `from` folder to the `dest` folder and execute a script', () => {
+      let from = TEMPLATES_FOLDER;
+      let to = tmpFolder;
+
+      sinon.stub(exec, 'copy').returns(Promise.resolve());
+
+      return exec.new(tmpFolder)
+      .then(() => {
+        let execCopyArgs = exec.copy.args[0][0];
+        expect(execCopyArgs.from).to.equal(path.join(from, 'new'));
+        expect(execCopyArgs.to).to.equal(to);
+        expect(execCopyArgs.transform).to.be.a('function');
+        expect(UtilsStub.executeScript.calledWith(SCRIPT)).to.true;
       });
     });
   });
