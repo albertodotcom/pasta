@@ -1,5 +1,4 @@
 var when = require('when');
-var path = require('path');
 
 var Utils = require('./utils');
 
@@ -14,10 +13,6 @@ class Exec {
     return flow.reduce(function (soFar, f) {
       return soFar.then(f);
     }, when({from, to, transform}));
-  }
-
-  outputFilePath(originFolder, destFolder, oldFilePath) {
-    return path.join(destFolder, oldFilePath.replace(originFolder, ''));
   }
 }
 

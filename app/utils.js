@@ -1,5 +1,6 @@
 let fs = require('fs-extra');
 let when = require('when');
+var path = require('path');
 
 const Utils = {
   ls(data) {
@@ -71,6 +72,9 @@ const Utils = {
     });
   },
 
+  outputFilePath(originFolder, destFolder, oldFilePath) {
+    return path.join(destFolder, oldFilePath.replace(originFolder, ''));
+  },
 };
 
 module.exports = Utils;

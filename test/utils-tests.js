@@ -84,4 +84,17 @@ describe('Utils', () => {
       });
     });
   });
+
+  describe('outputFilePath', () => {
+    it('it returns /tmp/target/package.json', () => {
+      const testAssestsFolder = path.join(__dirname, './assets/init');
+      const tmpFolder = path.join(__dirname, '../tmp/target');
+      const templateFilePath = path.join(__dirname, './assets/init/package.json');
+
+      let outputFilePath = Utils.outputFilePath(testAssestsFolder, tmpFolder, templateFilePath);
+
+      expect(outputFilePath).to.equal(path.join(__dirname, '../tmp/target/package.json'));
+    });
+  });
+
 });
