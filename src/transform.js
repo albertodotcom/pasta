@@ -1,6 +1,6 @@
 let Transform = {
   replaceNewLineByComment(fileContent, replacer) {
-    let findSpecialComment = /\|\|\|\s([\w\d]+)\s->\s([\w\d]+)/;
+    let findSpecialComment = /\|\|\|\s([\S]+?)\s->\s([\S]+)/;
 
     return new Promise((res) => {
       res(fileContent
