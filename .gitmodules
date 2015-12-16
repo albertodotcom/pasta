@@ -1,0 +1,3 @@
+[submodule "templates/new"]
+	path = templates/new
+	url = https://github.com/albertodotcom/react-template.git
