@@ -1,4 +1,5 @@
 {
+  // ||| react-cli -> appName
   "name": "react-cli",
   "version": "0.0.1",
   "description": "Terminal App for creating react applications",

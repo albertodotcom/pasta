@@ -41,10 +41,11 @@ const FileContent = JSON.stringify({
   },
 }, null, 2) + '\n';
 
-let toUpperCase = (data) => {
-  return new Promise((res) => res(data.toUpperCase()));
+let toUpperCase = {
+  transform: (data) => {
+    return new Promise((res) => res(data.toUpperCase()));
+  },
 };
-
 
 describe('Utils', () => {
   describe('.ls', () => {
@@ -71,10 +72,12 @@ describe('Utils', () => {
         from: testAssestsFolder,
         to: tmpFolder,
         files: FILES_AND_FOLDERS_PATH.slice(1),
-        transform: (fileContent) => {
-          return new Promise((res) => {
-            return res(fileContent);
-          });
+        transform: {
+          transform: (fileContent) => {
+            return new Promise((res) => {
+              return res(fileContent);
+            });
+          },
         },
       };
 
@@ -104,6 +107,13 @@ describe('Utils', () => {
   });
 
   describe('.transform', () => {
+    it(`reject the promise if no Transformer.transform method isn't present`, () => {
+      return Utils.transform({})
+      .catch((err) => {
+        expect(err.message).to.equal('Transformer must have a transform method');
+      });
+    });
+
     it('convert all the text to uppercase', () => {
       return Utils.transform('hello\nworld!!', toUpperCase)
       .then((data) => {

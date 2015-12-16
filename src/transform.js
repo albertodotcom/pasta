@@ -1,5 +1,9 @@
-let Transform = {
-  replaceNewLineByComment(fileContent, replacer) {
+class Transform {
+  constructor(replacer) {
+    this.replacer = replacer;
+  }
+
+  transform(fileContent) {
     let findSpecialComment = /\|\|\|\s([\S]+?)\s->\s([\S]+)/;
 
     return new Promise((res) => {
@@ -15,7 +19,7 @@ let Transform = {
 
         if (regExResult != null && regExResult.length >= 3) {
           let [, oldValue, newValue] = regExResult;
-          let replaceWith = replacer[newValue];
+          let replaceWith = this.replacer[newValue];
 
           if (replaceWith == null) {
             throw new Error(`replacer[${newValue}] doesn't exist`);
@@ -32,7 +36,7 @@ let Transform = {
       })
       .join('\n'));
     });
-  },
+  }
 };
 
 module.exports = { Transform };

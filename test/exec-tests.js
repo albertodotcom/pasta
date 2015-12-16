@@ -95,7 +95,7 @@ describe('exec', () => {
         let execCopyArgs = exec.copy.args[0][0];
         expect(execCopyArgs.from).to.equal(path.join(from, 'new'));
         expect(execCopyArgs.to).to.equal(to);
-        expect(execCopyArgs.transform).to.be.a('function');
+        expect(execCopyArgs.transform.transform).to.be.a('function');
         expect(UtilsStub.executeScript.args[0][0]).to.be.a('string');
       });
     });

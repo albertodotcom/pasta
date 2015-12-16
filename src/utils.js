@@ -78,8 +78,12 @@ const Utils = {
     });
   },
 
-  transform(data, transformer) {
-    return transformer(data)
+  transform(data, transformer = {}) {
+    if (typeof transformer.transform !== 'function') {
+      return Promise.reject(new Error('Transformer must have a transform method'));
+    }
+
+    return transformer.transform(data)
     .then((data) => {
       return Promise.resolve(data);
     });

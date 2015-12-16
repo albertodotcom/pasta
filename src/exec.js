@@ -21,10 +21,14 @@ class Exec {
   }
 
   new(destFolder) {
+    // make a distinction between destFolder and appName
+
     let execTrain = {
       from: path.join(FROM, 'new'),
       to: path.join(process.cwd(), destFolder),
-      transform: Transform.replaceNewLineByComment,
+      transform: new Transform({
+        appName: destFolder,
+      }),
     };
 
     return this.copy(execTrain)
