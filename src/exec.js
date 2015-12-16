@@ -28,7 +28,7 @@ class Exec {
   new(destFolder) {
     let execTrain = {
       from: path.join(FROM, 'new'),
-      to: destFolder,
+      to: path.join(process.cwd(), destFolder),
       transform: TRANSFORM,
     };
 
