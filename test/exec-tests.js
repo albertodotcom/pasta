@@ -22,8 +22,6 @@ const testAssestsFolder = path.join(__dirname, './assets/init');
 const TEMPLATES_FOLDER = path.join(__dirname, '../templates/');
 const tmpFolder = path.join(__dirname, '../tmp/init');
 
-const SCRIPT = 'echo "pasta" ; echo "pizza"';
-
 function listFilePathInFolder(folder) {
   return new Promise((resolve, reject) => {
     var items = [];
@@ -98,7 +96,7 @@ describe('exec', () => {
         expect(execCopyArgs.from).to.equal(path.join(from, 'new'));
         expect(execCopyArgs.to).to.equal(to);
         expect(execCopyArgs.transform).to.be.a('function');
-        expect(UtilsStub.executeScript.calledWith(SCRIPT)).to.true;
+        expect(UtilsStub.executeScript.args[0][0]).to.be.a('string');
       });
     });
   });

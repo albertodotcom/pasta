@@ -2,15 +2,10 @@ var when = require('when');
 var path = require('path');
 
 var Utils = require('./utils');
+var { Transform } = require('./transform');
 
-const SCRIPT = 'echo "pasta" ; echo "pizza"';
+const SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
 const FROM = path.join(__dirname, '..', 'templates');
-const TRANSFORM = (data) => {
-  return new Promise((res) => {
-    console.log('transform');
-    res(data);
-  });
-};
 
 class Exec {
   copy({from, to, transform}) {
@@ -29,7 +24,7 @@ class Exec {
     let execTrain = {
       from: path.join(FROM, 'new'),
       to: path.join(process.cwd(), destFolder),
-      transform: TRANSFORM,
+      transform: Transform.replaceNewLineByComment,
     };
 
     return this.copy(execTrain)
