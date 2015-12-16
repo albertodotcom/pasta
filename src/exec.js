@@ -5,7 +5,7 @@ var Utils = require('./utils');
 
 const SCRIPT = 'echo "pasta" ; echo "pizza"';
 const FROM = path.join(__dirname, '..', 'templates');
-const TRANSFORM = () => {
+const TRANSFORM = (data) => {
   return new Promise((res) => {
     console.log('transform');
     res(data);
