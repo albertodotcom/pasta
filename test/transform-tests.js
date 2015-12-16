@@ -1,31 +1,41 @@
-import { expect } from 'chai';
-import stream from 'stream';
-import sinon from 'sinon';
+let { expect } = require('chai');
 
-import Transform from '../src/transform';
+let { Transform } = require('../src/transform');
 
-let readStream = () => {
-  var s = new stream.Readable();
-  s._read = function noop() {}; // redundant? see update below
-  s.push('your text here');
-  s.push(null);
-  return s;
-};
+let originalFileContent = `\
+// ||| hello -> componentName
+function hello {
+  console.log('hello world');
+}
+
+var hello = 'hello world';
+`;
+
+let parsedFileContent = `\
+function bye {
+  console.log('hello world');
+}
+
+var hello = 'hello world';
+`;
 
 describe('Transform', () => {
-  describe('_transform', () => {
-    it('execute the function passed in the constructor', (done) => {
-      let transformFunc = sinon.spy();
-      let transform = new Transform(transformFunc);
+  describe('replaceNewLineByComment', () => {
+    it('replace comments ||| OldName -> componentName', () => {
+      let replacer = {
+        componentName: 'bye',
+      };
 
-      readStream()
-      .pipe(transform)
-      .on('data', function (item) {
-        this.push(item.path);
-      })
-      .on('end', () => {
-        expect(transformFunc.calledOnce).to.true;
-        done();
+      return Transform.replaceNewLineByComment(originalFileContent, replacer)
+      .then((data) => {
+        expect(data).to.equal(parsedFileContent);
+      });
+    });
+
+    it('returns an error if replacer is not found', () => {
+      return Transform.replaceNewLineByComment(originalFileContent, {})
+      .catch((error) => {
+        expect(error.message).to.equal(`replacer[componentName] doesn't exist`);
       });
     });
   });

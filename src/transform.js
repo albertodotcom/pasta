@@ -1,15 +1,38 @@
-import { Transform } from 'stream';
+let Transform = {
+  replaceNewLineByComment(fileContent, replacer) {
+    let findSpecialComment = /\|\|\|\s([\w\d]+)\s->\s([\w\d]+)/;
 
-class Transformer extends Transform {
-  constructor(func) {
-    super();
+    return new Promise((res) => {
+      res(fileContent
+      .split('\n')
+      .map((line, index, lines) => {
+        // use previous line special comment to perform a replace in the current line
+        if (index === 0) {
+          return line;
+        }
 
-    this._transform = function (chunk, enc, cb) {
-      let modifiedChunck = func(chunk, enc) || chunk;
-      this.push(modifiedChunck);
-      cb();
-    };
-  }
-}
+        let regExResult = findSpecialComment.exec(lines[index - 1]);
 
-export default Transformer;
+        if (regExResult != null && regExResult.length >= 3) {
+          let [, oldValue, newValue] = regExResult;
+          let replaceWith = replacer[newValue];
+
+          if (replaceWith == null) {
+            throw new Error(`replacer[${newValue}] doesn't exist`);
+          }
+
+          return line.replace(oldValue, replaceWith);
+        }
+
+        return line;
+      })
+      .filter((line) => {
+        // delete special comment lines
+        return findSpecialComment.exec(line) == null;
+      })
+      .join('\n'));
+    });
+  },
+};
+
+module.exports = { Transform };
