@@ -18,7 +18,7 @@ let usage = `
     -q, --quiet     only output critical errors
     -V, --version   output version and exit
     -h, --help      show help
-`
+`;
 
 let CLI = {
   main(argv) {
