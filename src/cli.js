@@ -1,6 +1,7 @@
-var chalk = require('chalk');
-var parseArgv = require('minimist');
-var exec = require('./exec.js');
+let chalk = require('chalk');
+let parseArgv = require('minimist');
+let exec = require('./exec.js');
+let { logger } = require('./logger');
 
 let usage = `
   usage: pasta [options] [command]
@@ -25,25 +26,25 @@ let CLI = {
     let opts = parseArgv(argv);
     let cmd = opts._[2];
 
+    if (cmd === 'help' || !cmd) {
+      console.log(usage);
+      process.exit(0);
+    }
+
     try {
       exec[cmd](opts._[3])
       .catch((error) => {
-        console.log(error.stack);
+        logger.error(error);
         process.exit(1);
       });
     } catch(error) {
       if (error.toString() === 'TypeError: exec[cmd] is not a function') {
-        console.log(`'${ cmd }' - no such command`);
-        console.log(usage);
+        logger.error(`'${ cmd }' - no such command`);
+        logger.info(usage);
         process.exit(1);
       } else {
         throw(error);
       }
-    }
-
-    if (cmd === 'help' || !cmd) {
-      console.log(usage);
-      process.exit(0);
     }
   },
 };
