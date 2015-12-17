@@ -17,18 +17,32 @@ let usage = `
 
     -v, --verbose   show debug information
     -q, --quiet     only output critical errors
-    -V, --version   output version and exit
-    -h, --help      show help
 `;
+
+let globalOptions = {
+  boolean: ['verbose', 'quiet'],
+  alias: {
+    verbose: 'v',
+    quiet: 'q',
+  },
+};
 
 let CLI = {
   main(argv) {
-    let opts = parseArgv(argv);
+    let opts = parseArgv(argv, globalOptions);
     let cmd = opts._[2];
 
     if (cmd === 'help' || !cmd) {
       console.log(usage);
       process.exit(0);
+    }
+
+    if (opts.verbose) {
+      if ('-vv' in argv) {
+        logger.transports.cli.level = 'silly';
+      } else {
+        logger.transports.cli.level = 'verbose';
+      }
     }
 
     try {
