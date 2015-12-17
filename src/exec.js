@@ -21,7 +21,7 @@ class Exec {
   }
 
   new(destFolder) {
-    // make a distinction between destFolder and appName
+    // TODO make a distinction between destFolder and appName
 
     let execTrain = {
       from: path.join(FROM, 'new'),
