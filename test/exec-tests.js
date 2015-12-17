@@ -5,6 +5,9 @@ import through2 from 'through2';
 import prequire from 'proxyquire';
 var sinon = require('sinon');
 
+var { logger } = require('../src/logger');
+logger.transports.cli.level = 'error';
+
 let UtilsStub = {
   executeScript: sinon.stub().returns(true),
 };

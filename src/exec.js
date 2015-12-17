@@ -1,8 +1,9 @@
-var when = require('when');
-var path = require('path');
+let when = require('when');
+let path = require('path');
 
-var Utils = require('./utils');
-var { Transform } = require('./transform');
+let Utils = require('./utils');
+let { Transform } = require('./transform');
+let { logger } = require('./logger');
 
 const SCRIPT = (destFolder) => `cd ${destFolder} && npm install && git init && git add --all && git commit -m "Create scaffold project"`;
 const FROM = path.join(__dirname, '..', 'templates');
@@ -30,6 +31,9 @@ class Exec {
         appName: destFolder,
       }),
     };
+
+    logger.info('Start a new project');
+    logger.verbose(`with the following configurations:\n${JSON.stringify(execTrain, null, 2)}`);
 
     return this.copy(execTrain)
     .then(() => {
