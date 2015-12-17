@@ -1,11 +1,11 @@
-import { expect } from 'chai';
-import path from 'path';
-import fs from 'fs-extra';
-import through2 from 'through2';
-import prequire from 'proxyquire';
-var sinon = require('sinon');
+let { expect } = require('chai');
+let path = require('path');
+let fs = require('fs-extra');
+let through2 = require('through2');
+let prequire = require('proxyquire');
+let sinon = require('sinon');
 
-var { logger } = require('../src/logger');
+let { logger } = require('../src/logger');
 logger.transports.cli.level = 'error';
 
 let UtilsStub = {
@@ -21,13 +21,13 @@ let excludeFolders = through2.obj(function (item, enc, next) {
   next();
 });
 
-const testAssestsFolder = path.join(__dirname, './assets/init');
+const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/init');
 const TEMPLATES_FOLDER = path.join(__dirname, '../templates/');
-const tmpFolder = path.join(__dirname, '../tmp/init');
+const TMP_FOLDER = path.join(__dirname, '../tmp/init');
 
 function listFilePathInFolder(folder) {
   return new Promise((resolve, reject) => {
-    var items = [];
+    let items = [];
     fs.walk(folder)
     .pipe(excludeFolders)
     .on('data', function (item) {
@@ -57,8 +57,8 @@ describe('exec', () => {
       UtilsStub.copyAndTransform = sinon.spy();
 
       return exec.copy({
-        from: testAssestsFolder,
-        to: tmpFolder,
+        from: TEST_ASSESTS_FOLDER,
+        to: TMP_FOLDER,
       })
       .then(() => {
         expect(UtilsStub.ls.calledOnce).to.true;
@@ -70,15 +70,15 @@ describe('exec', () => {
 
     it('creates all the files found in a folder to destination one', () => {
       let expectedFiles = [
-        path.join(tmpFolder, 'package.json'),
+        path.join(TMP_FOLDER, 'package.json'),
       ];
 
       return exec.copy({
-        from: testAssestsFolder,
-        to: tmpFolder,
+        from: TEST_ASSESTS_FOLDER,
+        to: TMP_FOLDER,
       })
       .then(() => {
-        return listFilePathInFolder(tmpFolder);
+        return listFilePathInFolder(TMP_FOLDER);
       })
       .then((resultFiles) => {
         expect(resultFiles).to.deep.equal(expectedFiles);
@@ -89,7 +89,7 @@ describe('exec', () => {
   describe('.new', () => {
     it('copies the files from the `from` folder to the `dest` folder and execute a script', () => {
       let from = TEMPLATES_FOLDER;
-      let to = tmpFolder;
+      let to = TMP_FOLDER;
 
       sinon.stub(exec, 'copy').returns(Promise.resolve());
 

@@ -5,7 +5,7 @@ let shell = require('shelljs');
 
 let { logger } = require('./logger');
 
-const Utils = {
+let Utils = {
   ls(data) {
     let {from} = data;
 

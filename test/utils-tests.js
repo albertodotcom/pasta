@@ -9,14 +9,14 @@ let Utils = prequire('../src/utils', {
   'shelljs': shellStub,
 });
 
-const testAssestsFolder = path.join(__dirname, './assets/init');
+const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/init');
 const FILES_AND_FOLDERS_PATH = [
   '/Users/aforni/Projects/react-cli/test/assets/init',
   '/Users/aforni/Projects/react-cli/test/assets/init/package.json',
 ];
-const tmpFolder = path.join(__dirname, '../tmp/init');
+const TMP_FOLDER = path.join(__dirname, '../tmp/init');
 
-const FileContent = JSON.stringify({
+const FILE_CONTENT = JSON.stringify({
   'name': 'react-cli',
   'version': '0.0.1',
   'description': 'Terminal App for creating react applications',
@@ -50,7 +50,7 @@ let toUpperCase = {
 describe('Utils', () => {
   describe('.ls', () => {
     it('resolves with and object that contains the key "filesAndFolders"', () => {
-      return Utils.ls({from: testAssestsFolder})
+      return Utils.ls({from: TEST_ASSESTS_FOLDER})
       .then(({filesAndFolders}) => {
         expect(filesAndFolders).to.deep.equal(FILES_AND_FOLDERS_PATH);
       });
@@ -69,8 +69,8 @@ describe('Utils', () => {
   describe('.copyAndTransform', () => {
     it('calls readFile, transform and writeFile for each file', () => {
       let data = {
-        from: testAssestsFolder,
-        to: tmpFolder,
+        from: TEST_ASSESTS_FOLDER,
+        to: TMP_FOLDER,
         files: FILES_AND_FOLDERS_PATH.slice(1),
         transform: {
           transform: (fileContent) => {
@@ -92,14 +92,14 @@ describe('Utils', () => {
     it('return a file content', () => {
       return Utils.readFile(FILES_AND_FOLDERS_PATH[1])
       .then((fileContent) => {
-        expect(fileContent).to.equal(FileContent);
+        expect(fileContent).to.equal(FILE_CONTENT);
       });
     });
   });
 
   describe('.writeFile', () => {
     it('calls the outputFile method on fs', () => {
-      return Utils.writeFile(FILES_AND_FOLDERS_PATH[1], FileContent)
+      return Utils.writeFile(FILES_AND_FOLDERS_PATH[1], FILE_CONTENT)
       .then((filePath) => {
         expect(filePath).to.equal(FILES_AND_FOLDERS_PATH[1]);
       });
@@ -124,11 +124,11 @@ describe('Utils', () => {
 
   describe('outputFilePath', () => {
     it('it returns /tmp/target/package.json', () => {
-      const testAssestsFolder = path.join(__dirname, './assets/init');
-      const tmpFolder = path.join(__dirname, '../tmp/target');
+      const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/init');
+      const TMP_FOLDER = path.join(__dirname, '../tmp/target');
       const templateFilePath = path.join(__dirname, './assets/init/package.json');
 
-      let outputFilePath = Utils.outputFilePath(testAssestsFolder, tmpFolder, templateFilePath);
+      let outputFilePath = Utils.outputFilePath(TEST_ASSESTS_FOLDER, TMP_FOLDER, templateFilePath);
 
       expect(outputFilePath).to.equal(path.join(__dirname, '../tmp/target/package.json'));
     });
