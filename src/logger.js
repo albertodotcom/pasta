@@ -11,10 +11,10 @@ class Cli extends winston.Transport{
 
   log(level, msg, meta, callback) {
     if (level === 'error') {
-      process.stderr.write('\n  ' + (chalk.red('error')) + ' ' + msg + '\n');
+      process.stderr.write(`\n ${chalk.red('error')} ${ msg || meta.message }\n`);
       if (this.level === 'verbose' && meta != null) {
         if (meta.stack != null) {
-          stack = meta.stack.substr(meta.stack.indexOf('\n') + 1);
+          let stack = meta.stack.substr(meta.stack.indexOf('\n') + 1);
           process.stderr.write(stack + '\n\n');
         }
 

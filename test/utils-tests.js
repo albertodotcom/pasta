@@ -100,8 +100,8 @@ describe('Utils', () => {
   describe('.writeFile', () => {
     it('calls the outputFile method on fs', () => {
       return Utils.writeFile(FILES_AND_FOLDERS_PATH[1], FileContent)
-      .then((done) => {
-        expect(done).to.true;
+      .then((filePath) => {
+        expect(filePath).to.equal(FILES_AND_FOLDERS_PATH[1]);
       });
     });
   });
