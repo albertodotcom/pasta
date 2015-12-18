@@ -4,7 +4,7 @@ let { Transform } = require('../src/transform');
 
 let originalFileContent = `\
 // ||| hello -> componentName
-function hello {
+function hello { // hello
   console.log('hello world');
 }
 
@@ -12,7 +12,7 @@ var hello = 'hello world';
 `;
 
 let parsedFileContent = `\
-function bye {
+function bye { // bye
   console.log('hello world');
 }
 

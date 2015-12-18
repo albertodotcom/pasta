@@ -25,7 +25,7 @@ class Transform {
             throw new Error(`replacer[${newValue}] doesn't exist`);
           }
 
-          return line.replace(oldValue, replaceWith);
+          return line.replace(new RegExp(oldValue, 'ig'), replaceWith);
         }
 
         return line;
