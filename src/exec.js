@@ -39,8 +39,23 @@ class Exec {
     });
   }
 
-  create() {
+  create([type, name]) {
+    // TODO use a plural library
+    let destFolder = path.join(process.cwd(), 'app', type + 's');
 
+    let execTrain = {
+      from: path.join(FROM, 'create', type),
+      to: destFolder,
+      transform: new Transform({
+        componentName: name,
+      }),
+      outputFileName: name,
+    };
+
+    logger.info(`Create the "${type}" named: "${name}"`);
+    logger.verbose(`with the following configurations:\n${JSON.stringify(execTrain, null, 2)}`);
+
+    return this._copy(execTrain);
   }
 }
 

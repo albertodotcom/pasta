@@ -70,4 +70,29 @@ describe('exec', () => {
       });
     });
   });
+
+  describe('.create', () => {
+    beforeEach(() => {
+      sinon.stub(exec, '_copy').returns(Promise.resolve());
+    });
+
+    afterEach(() => {
+      exec._copy.restore();
+    });
+
+    it('copies the files from the `from` folder to the `dest` folder', () => {
+      let from = TEMPLATES_FOLDER;
+      let to = path.join(process.cwd(), 'app', 'components');
+
+      return exec.create(['component', 'TopBar'])
+      .then(() => {
+        let execCopyArgs = exec._copy.args[0][0];
+        expect(execCopyArgs.from).to.equal(path.join(from, 'create', 'component'));
+        expect(execCopyArgs.to).to.equal(to);
+
+        // TODO you can do better here!!!
+        expect(execCopyArgs.transform.transform).to.be.a('function');
+      });
+    });
+  });
 });
