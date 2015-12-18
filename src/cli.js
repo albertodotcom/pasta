@@ -8,8 +8,8 @@ let usage = `
 
   commands:
 
-    ${ chalk.bold('new') } [name] - create a scaffold project
-    ${ chalk.bold('create') } [template] [name] - create a set of files base on the specified template
+    ${ chalk.bold('new') } <name> [path] - create a scaffold project. Default path is the current folder
+    ${ chalk.bold('create') } <template> <name> - create a set of files base on the specified template
 
     ${ chalk.bold('help') } - Display the available options
 
@@ -46,7 +46,7 @@ let CLI = {
     }
 
     try {
-      exec[cmd](opts._[3])
+      exec[cmd](opts._.slice(3))
       .catch((error) => {
         logger.error(error);
         process.exit(1);

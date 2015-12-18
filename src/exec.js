@@ -9,7 +9,7 @@ const SCRIPT = (destFolder) => `cd ${destFolder} && npm install && git init && g
 const FROM = path.join(__dirname, '..', 'templates');
 
 class Exec {
-  _copy({from, to, transform}) {
+  _copy({from, to, transform, outputFileName}) {
     let flow = [
       Utils.ls,
       Utils.filterFiles,
@@ -21,14 +21,12 @@ class Exec {
     }, when({from, to, transform}));
   }
 
-  new(destFolder) {
-    // TODO make a distinction between destFolder and appName
-
+  new([name, destFolder = '.']) {
     let execTrain = {
       from: path.join(FROM, 'new'),
       to: path.join(process.cwd(), destFolder),
       transform: new Transform({
-        appName: destFolder,
+        appName: name,
       }),
     };
 
