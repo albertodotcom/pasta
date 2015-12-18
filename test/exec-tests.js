@@ -19,7 +19,7 @@ const TEMPLATES_FOLDER = path.join(__dirname, '../templates/');
 const TMP_FOLDER = path.join(__dirname, '../tmp/init');
 
 describe('exec', () => {
-  describe('.copy', () => {
+  describe('._copy', () => {
     beforeEach(() => {
       sinon.spy(UtilsStub, 'ls');
       sinon.spy(UtilsStub, 'filterFiles');
@@ -33,7 +33,7 @@ describe('exec', () => {
     });
 
     it('calls ls, filterFiles, copyAndTransform form Utils', () => {
-      return exec.copy({
+      return exec._copy({
         from: TEST_ASSESTS_FOLDER,
         to: TMP_FOLDER,
       })
@@ -46,15 +46,21 @@ describe('exec', () => {
   });
 
   describe('.new', () => {
+    beforeEach(() => {
+      sinon.stub(exec, '_copy').returns(Promise.resolve());
+    });
+
+    afterEach(() => {
+      exec._copy.restore();
+    });
+
     it('copies the files from the `from` folder to the `dest` folder and execute a script', () => {
       let from = TEMPLATES_FOLDER;
       let to = TMP_FOLDER;
 
-      sinon.stub(exec, 'copy').returns(Promise.resolve());
-
       return exec.new('/tmp/init')
       .then(() => {
-        let execCopyArgs = exec.copy.args[0][0];
+        let execCopyArgs = exec._copy.args[0][0];
         expect(execCopyArgs.from).to.equal(path.join(from, 'new'));
         expect(execCopyArgs.to).to.equal(to);
         expect(execCopyArgs.transform.transform).to.be.a('function');

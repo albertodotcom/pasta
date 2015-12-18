@@ -9,7 +9,7 @@ const SCRIPT = (destFolder) => `cd ${destFolder} && npm install && git init && g
 const FROM = path.join(__dirname, '..', 'templates');
 
 class Exec {
-  copy({from, to, transform}) {
+  _copy({from, to, transform}) {
     let flow = [
       Utils.ls,
       Utils.filterFiles,
@@ -35,10 +35,14 @@ class Exec {
     logger.info('Start a new project');
     logger.verbose(`with the following configurations:\n${JSON.stringify(execTrain, null, 2)}`);
 
-    return this.copy(execTrain)
+    return this._copy(execTrain)
     .then(() => {
       return Utils.executeScript(SCRIPT(destFolder));
     });
+  }
+
+  create() {
+
   }
 }
 
