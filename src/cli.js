@@ -33,7 +33,7 @@ let CLI = {
     let cmd = opts._[2];
 
     if (cmd === 'help' || !cmd) {
-      console.log(usage);
+      logger.info(usage);
       process.exit(0);
     }
 

@@ -67,6 +67,14 @@ describe('Utils', () => {
   });
 
   describe('.copyAndTransform', () => {
+    beforeEach(() => {
+      sinon.spy(Utils, 'transform');
+    });
+
+    afterEach(() => {
+      Utils.transform.restore();
+    });
+
     it('calls readFile, transform and writeFile for each file', () => {
       let data = {
         from: TEST_ASSESTS_FOLDER,
@@ -81,8 +89,24 @@ describe('Utils', () => {
         },
       };
 
+
       return Utils.copyAndTransform(data)
       .then((done) => {
+        expect(Utils.transform.calledOnce).to.true;
+        expect(done).to.true;
+      });
+    });
+
+    it(`doesn't call the transform function when it is not passed in`, () => {
+      let data = {
+        from: TEST_ASSESTS_FOLDER,
+        to: TMP_FOLDER,
+        files: FILES_AND_FOLDERS_PATH.slice(1),
+      };
+
+      return Utils.copyAndTransform(data)
+      .then((done) => {
+        expect(Utils.transform.callCount).to.equal(0);
         expect(done).to.true;
       });
     });

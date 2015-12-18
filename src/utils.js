@@ -60,9 +60,17 @@ let Utils = {
     logger.verbose(`Copy and transform from "${ from }" to "${ to }"`);
     logger.silly(`Copy and transform the following files:\n${JSON.stringify(files, null, 2)}`);
 
+    if (transform == null) {
+      logger.verbose('Transform is not defined so no transformation will be done');
+    }
+
     return when.all(files.map((file) => {
       return Utils.readFile(file)
       .then((fileContent) => {
+        if (transform == null) {
+          return fileContent;
+        }
+
         logger.verbose(`Transform: "${file}"`);
         return Utils.transform(fileContent, transform);
       })
