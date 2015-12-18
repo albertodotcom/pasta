@@ -16,7 +16,7 @@ let exec = prequire('../src/exec', {
 
 const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/init');
 const TEMPLATES_FOLDER = path.join(__dirname, '../templates/');
-const TMP_FOLDER = path.join(__dirname, '../tmp/init');
+const TMP_FOLDER = path.join(__dirname, '../tmp/');
 
 describe('exec', () => {
   describe('._copy', () => {
@@ -56,13 +56,15 @@ describe('exec', () => {
 
     it('copies the files from the `from` folder to the `dest` folder and execute a script', () => {
       let from = TEMPLATES_FOLDER;
-      let to = TMP_FOLDER;
+      let to = path.join(TMP_FOLDER, 'init');
 
-      return exec.new('/tmp/init')
+      return exec.new(['newApp', '/tmp/init'])
       .then(() => {
         let execCopyArgs = exec._copy.args[0][0];
         expect(execCopyArgs.from).to.equal(path.join(from, 'new'));
         expect(execCopyArgs.to).to.equal(to);
+
+        // TODO you can do better here!!!
         expect(execCopyArgs.transform.transform).to.be.a('function');
         expect(UtilsStub.executeScript.args[0][0]).to.be.a('string');
       });

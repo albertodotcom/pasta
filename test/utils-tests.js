@@ -9,12 +9,14 @@ let Utils = prequire('../src/utils', {
   'shelljs': shellStub,
 });
 
-const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/init');
+const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/');
+const TEST_ASSESTS_FOLDER_INIT = path.join(TEST_ASSESTS_FOLDER, 'init');
+const TEST_ASSESTS_FOLDER_COMPONENT = path.join(TEST_ASSESTS_FOLDER, 'create', 'component');
 const FILES_AND_FOLDERS_PATH = [
   '/Users/aforni/Projects/react-cli/test/assets/init',
   '/Users/aforni/Projects/react-cli/test/assets/init/package.json',
 ];
-const TMP_FOLDER = path.join(__dirname, '../tmp/init');
+const TMP_FOLDER = path.join(__dirname, '../tmp');
 
 const FILE_CONTENT = JSON.stringify({
   'name': 'react-cli',
@@ -50,7 +52,7 @@ let toUpperCase = {
 describe('Utils', () => {
   describe('.ls', () => {
     it('resolves with and object that contains the key "filesAndFolders"', () => {
-      return Utils.ls({from: TEST_ASSESTS_FOLDER})
+      return Utils.ls({from: TEST_ASSESTS_FOLDER_INIT})
       .then(({filesAndFolders}) => {
         expect(filesAndFolders).to.deep.equal(FILES_AND_FOLDERS_PATH);
       });
@@ -77,8 +79,8 @@ describe('Utils', () => {
 
     it('calls readFile, transform and writeFile for each file', () => {
       let data = {
-        from: TEST_ASSESTS_FOLDER,
-        to: TMP_FOLDER,
+        from: TEST_ASSESTS_FOLDER_INIT,
+        to: path.join(TMP_FOLDER, 'init'),
         files: FILES_AND_FOLDERS_PATH.slice(1),
         transform: {
           transform: (fileContent) => {
@@ -89,25 +91,44 @@ describe('Utils', () => {
         },
       };
 
-
       return Utils.copyAndTransform(data)
-      .then((done) => {
+      .then((resultFilePaths) => {
         expect(Utils.transform.calledOnce).to.true;
-        expect(done).to.true;
+        expect(resultFilePaths).to.deep.equal(['/Users/aforni/Projects/react-cli/tmp/init/package.json']);
       });
     });
 
     it(`doesn't call the transform function when it is not passed in`, () => {
       let data = {
-        from: TEST_ASSESTS_FOLDER,
-        to: TMP_FOLDER,
+        from: TEST_ASSESTS_FOLDER_INIT,
+        to: path.join(TMP_FOLDER, 'init'),
         files: FILES_AND_FOLDERS_PATH.slice(1),
       };
 
       return Utils.copyAndTransform(data)
-      .then((done) => {
+      .then((resultFilePaths) => {
         expect(Utils.transform.callCount).to.equal(0);
-        expect(done).to.true;
+        expect(resultFilePaths).to.deep.equal(['/Users/aforni/Projects/react-cli/tmp/init/package.json']);
+      });
+    });
+
+    it('changes the output file names according to the outputFileName', () => {
+      let data = {
+        from: TEST_ASSESTS_FOLDER_COMPONENT,
+        to: path.join(TMP_FOLDER, 'components'),
+        files: [
+          path.join(TEST_ASSESTS_FOLDER_COMPONENT, 'template.js'),
+          path.join(TEST_ASSESTS_FOLDER_COMPONENT, 'template-test.js'),
+        ],
+        outputFileName: 'Pesto',
+      };
+
+      return Utils.copyAndTransform(data)
+      .then((resultFilePaths) => {
+        expect(resultFilePaths).to.deep.equal([
+          '/Users/aforni/Projects/react-cli/tmp/components/Pesto.js',
+          '/Users/aforni/Projects/react-cli/tmp/components/Pesto-test.js',
+        ]);
       });
     });
   });
@@ -146,15 +167,22 @@ describe('Utils', () => {
     });
   });
 
-  describe('outputFilePath', () => {
+  describe('.outputFilePath', () => {
     it('it returns /tmp/target/package.json', () => {
-      const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/init');
-      const TMP_FOLDER = path.join(__dirname, '../tmp/target');
-      const templateFilePath = path.join(__dirname, './assets/init/package.json');
+      const TMP_FOLDER_TARGET = path.join(TMP_FOLDER, 'target');
+      const TEMPLATE_FILEPATH = path.join(TEST_ASSESTS_FOLDER_INIT, 'package.json');
 
-      let outputFilePath = Utils.outputFilePath(TEST_ASSESTS_FOLDER, TMP_FOLDER, templateFilePath);
+      let outputFilePath = Utils.outputFilePath(TEST_ASSESTS_FOLDER_INIT, TMP_FOLDER_TARGET, TEMPLATE_FILEPATH);
 
-      expect(outputFilePath).to.equal(path.join(__dirname, '../tmp/target/package.json'));
+      expect(outputFilePath).to.equal(path.join(TMP_FOLDER_TARGET, 'package.json'));
+    });
+
+    it('uses the outputFileName to construct the new file path', () => {
+      const TMP_FOLDER_TARGET = path.join(TMP_FOLDER, 'target');
+      const TEMPLATE_FILEPATH = path.join(TEST_ASSESTS_FOLDER_COMPONENT, 'template-test.js');
+      let outputFilePath = Utils.outputFilePath(TEST_ASSESTS_FOLDER, TMP_FOLDER_TARGET, TEMPLATE_FILEPATH, 'Lasagne');
+
+      expect(outputFilePath).to.equal(path.join(TMP_FOLDER_TARGET, 'Lasagne-test.js'));
     });
   });
 

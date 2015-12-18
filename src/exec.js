@@ -18,7 +18,7 @@ class Exec {
 
     return flow.reduce(function (soFar, f) {
       return soFar.then(f);
-    }, when({from, to, transform}));
+    }, when({from, to, transform, outputFileName}));
   }
 
   new([name, destFolder = '.']) {

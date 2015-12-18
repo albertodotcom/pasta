@@ -5,6 +5,8 @@ let shell = require('shelljs');
 
 let { logger } = require('./logger');
 
+const FILE_TEMPLATE_KEYWORD = 'template';
+
 let Utils = {
   ls(data) {
     let {from} = data;
@@ -55,9 +57,9 @@ let Utils = {
   },
 
   copyAndTransform(data) {
-    let {files, transform, from, to} = data;
+    let {files, transform, from, to, outputFileName} = data;
 
-    logger.verbose(`Copy and transform from "${ from }" to "${ to }"`);
+    logger.verbose(`Copy and transform from "${ from }" to "${ to }, with:\n${ JSON.stringify(data, null, 2) }"`);
     logger.silly(`Copy and transform the following files:\n${JSON.stringify(files, null, 2)}`);
 
     if (transform == null) {
@@ -75,13 +77,13 @@ let Utils = {
         return Utils.transform(fileContent, transform);
       })
       .then((transformedFileContent) => {
-        let newFilePath = Utils.outputFilePath(from, to, file);
+        let newFilePath = Utils.outputFilePath(from, to, file, outputFileName);
         return Utils.writeFile(newFilePath, transformedFileContent);
       });
     }))
     .then((createdFilePaths) => {
       logger.info(`Created the following files:\n${createdFilePaths.join('\n')}`);
-      return true;
+      return createdFilePaths;
     });
   },
 
@@ -119,8 +121,17 @@ let Utils = {
     });
   },
 
-  outputFilePath(originFolder, destFolder, oldFilePath) {
-    return path.join(destFolder, oldFilePath.replace(originFolder, ''));
+  outputFilePath(originFolder, destFolder, oldFilePath, outputFileName) {
+    let oldFilePathWithoutTemplate;
+
+    if (outputFileName != null) {
+      oldFilePathWithoutTemplate = path.basename(oldFilePath).replace(FILE_TEMPLATE_KEYWORD, outputFileName);
+      logger.silly(`Replace ${oldFilePath} with ${oldFilePathWithoutTemplate}`);
+    } else {
+      oldFilePathWithoutTemplate = oldFilePath;
+    }
+
+    return path.join(destFolder, oldFilePathWithoutTemplate.replace(originFolder, ''));
   },
 
   executeScript(script) {
