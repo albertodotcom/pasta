@@ -118,7 +118,7 @@ describe('Utils', () => {
         to: path.join(TMP_FOLDER, 'components'),
         files: [
           path.join(TEST_ASSESTS_FOLDER_COMPONENT, 'template.js'),
-          path.join(TEST_ASSESTS_FOLDER_COMPONENT, 'template-test.js'),
+          path.join(TEST_ASSESTS_FOLDER_COMPONENT, 'template-tests.js'),
         ],
         outputFileName: 'Pesto',
       };
@@ -127,7 +127,7 @@ describe('Utils', () => {
       .then((resultFilePaths) => {
         expect(resultFilePaths).to.deep.equal([
           '/Users/aforni/Projects/react-cli/tmp/components/Pesto.js',
-          '/Users/aforni/Projects/react-cli/tmp/components/Pesto-test.js',
+          '/Users/aforni/Projects/react-cli/tmp/components/Pesto-tests.js',
         ]);
       });
     });
@@ -182,7 +182,7 @@ describe('Utils', () => {
       const TEMPLATE_FILEPATH = path.join(TEST_ASSESTS_FOLDER_COMPONENT, 'template-test.js');
       let outputFilePath = Utils.outputFilePath(TEST_ASSESTS_FOLDER, TMP_FOLDER_TARGET, TEMPLATE_FILEPATH, 'Lasagne');
 
-      expect(outputFilePath).to.equal(path.join(TMP_FOLDER_TARGET, 'Lasagne-test.js'));
+      expect(outputFilePath).to.equal(path.join(TMP_FOLDER_TARGET, 'create', 'component', 'Lasagne-test.js'));
     });
   });
 

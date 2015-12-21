@@ -8,8 +8,8 @@
   },
   "scripts": {
     "prepublish": "babel src --out-dir lib",
-    "test": "mocha --compilers js:babel-core/register",
-    "test-watch": "mocha --compilers js:babel-core/register --watch"
+    "test": "mocha $(find './test' -name '*-tests.js' -not -path './test/assets/*')",
+    "test-watch": "mocha $(find './test' -name '*-tests.js' -not -path './test/assets/*') --watch"
   },
   "keywords": [
     "react",
