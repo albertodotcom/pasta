@@ -5,7 +5,7 @@ let Utils = require('./utils');
 let { Transform } = require('./transform');
 let { logger } = require('./logger');
 
-const SCRIPT = (destFolder) => `cd ${destFolder} && npm install && git init && git add --all && git commit -m "Create scaffold project"`;
+const SCRIPT = `npm install && rm -rf .git && git init && git add --all && git commit -m "Create scaffold project"`;
 const FROM = path.join(__dirname, '..', 'templates');
 
 class Exec {
@@ -22,9 +22,11 @@ class Exec {
   }
 
   new([name, destFolder = '.']) {
+    let to = path.join(process.cwd(), destFolder);
+
     let execTrain = {
       from: path.join(FROM, 'new'),
-      to: path.join(process.cwd(), destFolder),
+      to: to,
       transform: new Transform({
         appName: name,
       }),
@@ -35,7 +37,9 @@ class Exec {
 
     return this._copy(execTrain)
     .then(() => {
-      return Utils.executeScript(SCRIPT(destFolder));
+      logger.verbose(`Change current working directory to: "${to}"`);
+      process.chdir(to);
+      Utils.executeScript(SCRIPT);
     });
   }
 

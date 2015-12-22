@@ -58,7 +58,8 @@ describe('exec', () => {
       let from = TEMPLATES_FOLDER;
       let to = path.join(TMP_FOLDER, 'init');
 
-      return exec.new(['newApp', '/tmp/init'])
+      process.chdir(TMP_FOLDER);
+      return exec.new(['newApp', 'init'])
       .then(() => {
         let execCopyArgs = exec._copy.args[0][0];
         expect(execCopyArgs.from).to.equal(path.join(from, 'new'));
