@@ -5,7 +5,7 @@ let Utils = require('./utils');
 let { Transform } = require('./transform');
 let { logger } = require('./logger');
 
-const SCRIPT = `npm install && rm -rf .git && git init && git add --all && git commit -m "Create scaffold project"`;
+const SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
 const FROM = path.join(__dirname, '..', 'templates');
 
 class Exec {
