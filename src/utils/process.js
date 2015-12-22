@@ -11,11 +11,16 @@ let Process = {
     .map((script) => {
       let [cmd, ...cmdArguments] = script.trim().split(' ');
 
+      // check if the strings has "text" or 'text'
       cmdArguments = cmdArguments.reduce((prev, current) => {
         if (prev.length === 0) return [current];
 
-        if (prev[prev.length - 1].indexOf('"') === 0) {
-          prev[prev.length - 1] = prev[prev.length - 1] + ' ' + current;
+        let lastElement = prev[prev.length - 1];
+
+        if (
+          (lastElement.indexOf(`"`) === 0 && lastElement.lastIndexOf(`"`) !== lastElement.length - 1) ||
+          (lastElement.indexOf(`'`) === 0 && lastElement.lastIndexOf(`'`) !== lastElement.length - 1)) {
+          prev[prev.length - 1] = lastElement + ' ' + current;
           return prev;
         } else {
           prev.push(current);

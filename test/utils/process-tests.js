@@ -49,5 +49,17 @@ describe('Process', () => {
         ['ls', ['-lh', '/usr']],
       ]);
     });
+
+    it(`returns echo, 'hello world'`, () => {
+      expect(Process.parseScripts(`echo 'hello world'`)).to.deep.equal([
+        ['echo', [`'hello world'`]],
+      ]);
+    });
+
+    it(`returns echo, "hello world"`, () => {
+      expect(Process.parseScripts(`echo "hello world" "foo baz"`)).to.deep.equal([
+        ['echo', [`"hello world"`, `"foo baz"`]],
+      ]);
+    });
   });
 });
