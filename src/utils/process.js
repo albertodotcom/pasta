@@ -29,8 +29,7 @@ let Process = {
 
   executeScript([cmd, cmdArguments]) {
     return new Promise((resolve, reject) => {
-      console.log(`Spawn this script: ${cmd}, with arguments: ${cmdArguments}`);
-      console.log(process.cwd());
+      logger.verbose(`Spawn: "${cmd}", with arguments: "${cmdArguments}", from "${process.cwd()}"`);
 
       let cmdProcess = spawn(cmd, cmdArguments);
 
@@ -43,7 +42,7 @@ let Process = {
       });
 
       cmdProcess.on('close', function (code) {
-        logger.info('child process exited with code ' + code);
+        logger.verbose('child process exited with code ' + code);
 
         code === 0 ? resolve(code) : reject(code);
       });
