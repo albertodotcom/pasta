@@ -1,4 +1,4 @@
-let fs = require('fs-extra');
+let fsExtra = require('fs-extra');
 let when = require('when');
 let path = require('path');
 let shell = require('shelljs');
@@ -16,7 +16,7 @@ let Utils = {
     return new Promise((resolve, reject) => {
       let items = [];
 
-      fs.walk(from)
+      fsExtra.walk(from)
       .on('data', function (item) {
         items.push(item.path);
       })
@@ -41,7 +41,7 @@ let Utils = {
 
     return when.filter(filesAndFolders, (fileOrFolderPath) => {
       return new Promise((resolve, reject) => {
-        fs.lstat(fileOrFolderPath, (err, fileOrFolder) => {
+        fsExtra.lstat(fileOrFolderPath, (err, fileOrFolder) => {
           if (err) reject(err);
           resolve(fileOrFolder.isFile());
         });
@@ -90,7 +90,7 @@ let Utils = {
   readFile(filePath) {
     logger.verbose(`Read: "${filePath}"`);
     return new Promise((resolve, reject) => {
-      fs.readFile(filePath, 'utf8', (err, data) => {
+      fsExtra.readFile(filePath, 'utf8', (err, data) => {
         if (err != null) return reject(err);
 
         resolve(data);
@@ -102,7 +102,7 @@ let Utils = {
   writeFile(filePath, data) {
     logger.silly(`Write: "${ filePath }"`);
     return new Promise((resolve, reject) => {
-      fs.outputFile(filePath, data, (err) => {
+      fsExtra.outputFile(filePath, data, (err) => {
         if (err != null) return reject(err);
 
         resolve(filePath);
