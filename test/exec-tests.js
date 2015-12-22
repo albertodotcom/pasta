@@ -47,7 +47,7 @@ describe('exec', () => {
 
   describe('.new', () => {
     beforeEach(() => {
-      sinon.stub(exec, '_copy').returns(Promise.resolve());
+      sinon.spy(exec, '_copy');
     });
 
     afterEach(() => {
@@ -58,8 +58,7 @@ describe('exec', () => {
       let from = TEMPLATES_FOLDER;
       let to = path.join(TMP_FOLDER, 'init');
 
-      process.chdir(TMP_FOLDER);
-      return exec.new(['newApp', 'init'])
+      return exec.new(['newApp', 'tmp/init'])
       .then(() => {
         let execCopyArgs = exec._copy.args[0][0];
         expect(execCopyArgs.from).to.equal(path.join(from, 'new'));

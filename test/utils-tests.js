@@ -13,8 +13,8 @@ const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/');
 const TEST_ASSESTS_FOLDER_INIT = path.join(TEST_ASSESTS_FOLDER, 'init');
 const TEST_ASSESTS_FOLDER_COMPONENT = path.join(TEST_ASSESTS_FOLDER, 'create', 'component');
 const FILES_AND_FOLDERS_PATH = [
-  '/Users/aforni/Projects/react-cli/test/assets/init',
-  '/Users/aforni/Projects/react-cli/test/assets/init/package.json',
+  TEST_ASSESTS_FOLDER_INIT,
+  path.join(TEST_ASSESTS_FOLDER_INIT, 'package.json'),
 ];
 const TMP_FOLDER = path.join(__dirname, '../tmp');
 
@@ -94,7 +94,7 @@ describe('Utils', () => {
       return Utils.copyAndTransform(data)
       .then((resultFilePaths) => {
         expect(Utils.transform.calledOnce).to.true;
-        expect(resultFilePaths).to.deep.equal(['/Users/aforni/Projects/react-cli/tmp/init/package.json']);
+        expect(resultFilePaths).to.deep.equal([path.join(TMP_FOLDER, 'init/package.json')]);
       });
     });
 
@@ -108,7 +108,7 @@ describe('Utils', () => {
       return Utils.copyAndTransform(data)
       .then((resultFilePaths) => {
         expect(Utils.transform.callCount).to.equal(0);
-        expect(resultFilePaths).to.deep.equal(['/Users/aforni/Projects/react-cli/tmp/init/package.json']);
+        expect(resultFilePaths).to.deep.equal([path.join(TMP_FOLDER, 'init/package.json')]);
       });
     });
 
@@ -126,8 +126,8 @@ describe('Utils', () => {
       return Utils.copyAndTransform(data)
       .then((resultFilePaths) => {
         expect(resultFilePaths).to.deep.equal([
-          '/Users/aforni/Projects/react-cli/tmp/components/Pesto.js',
-          '/Users/aforni/Projects/react-cli/tmp/components/Pesto-tests.js',
+          path.join(TMP_FOLDER, 'components/Pesto.js'),
+          path.join(TMP_FOLDER, 'components/Pesto-tests.js'),
         ]);
       });
     });
