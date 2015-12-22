@@ -186,14 +186,14 @@ describe('Utils', () => {
     });
   });
 
-  describe('executeScript', () => {
-    it('calls shell.exec with the passed params', () => {
-      sinon.stub(shellStub, 'exec').returns({code: 0});
+  describe('.executeScript', () => {
+    it('executes the script and returns code 0', () => {
+      let script = 'ls';
 
-      let script = 'echo hello';
-
-      let result = Utils.executeScript(script);
-      expect(result).to.true;
+      return Utils.executeScript(script)
+      .then((code) => {
+        expect(code).to.equal(0);
+      });
     });
   });
 });

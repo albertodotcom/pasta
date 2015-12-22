@@ -1,7 +1,7 @@
 let fsExtra = require('fs-extra');
 let when = require('when');
 let path = require('path');
-let shell = require('shelljs');
+let Process = require('./utils/process');
 
 let { logger } = require('./logger');
 
@@ -125,7 +125,7 @@ let Utils = {
     let oldFilePathWithoutTemplate;
 
     if (outputFileName != null) {
-      oldFilePathWithoutTemplate = path.basename(oldFilePath).replace(FILE_TEMPLATE_KEYWORD, outputFileName);
+      oldFilePathWithoutTemplate = oldFilePath.replace(FILE_TEMPLATE_KEYWORD, outputFileName);
       logger.silly(`Replace ${oldFilePath} with ${oldFilePathWithoutTemplate}`);
     } else {
       oldFilePathWithoutTemplate = oldFilePath;
@@ -137,7 +137,7 @@ let Utils = {
   executeScript(script) {
     logger.info(`Execute script:\n${script}`);
 
-    return shell.exec(script).code === 0;
+    return Process.spawnExec(script);
   },
 
 };
