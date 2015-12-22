@@ -1,7 +1,7 @@
 {
-  "name": "react-cli",
+  "name": "pasta",
   "version": "0.0.1",
-  "description": "Terminal App for creating react applications",
+  "description": "Terminal App for scaffolding and creating files based on templates",
   "main": "index.js",
   "bin": {
     "pasta": "./bin/pasta"
@@ -11,6 +11,7 @@
     "test": "mocha $(find './test' -name '*-tests.js' -not -path './test/assets/*')",
     "test-watch": "mocha $(find './test' -name '*-tests.js' -not -path './test/assets/*') --watch"
   },
+  "repository": "https://github.com/albertodotcom/pasta",
   "keywords": [
     "react",
     "cli",
