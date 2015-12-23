@@ -6,9 +6,7 @@ let sinon = require('sinon');
 let { logger } = require('../src/logger');
 logger.transports.cli.level = 'error';
 
-let UtilsStub = {
-  executeScript: sinon.stub().returns(true),
-};
+let UtilsStub = {};
 
 let exec = prequire('../src/exec', {
   './utils': UtilsStub,
@@ -47,11 +45,15 @@ describe('exec', () => {
 
   describe('.new', () => {
     beforeEach(() => {
-      sinon.spy(exec, '_copy');
+      sinon.stub(exec, '_copy').returns(Promise.resolve());
+      sinon.stub(process, 'chdir').returns(null);
+      sinon.stub(UtilsStub, 'executeScript').returns(null);
     });
 
     afterEach(() => {
       exec._copy.restore();
+      process.chdir.restore();
+      UtilsStub.executeScript.restore();
     });
 
     it('copies the files from the `from` folder to the `dest` folder and execute a script', () => {
