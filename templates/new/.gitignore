@@ -1,0 +1,10 @@
+.idea
+*.iml
+node_modules/
+*.log
+build/
+bower_components/
+tests/browser/reports
+.DS_Store
+coverage/
+dist/
