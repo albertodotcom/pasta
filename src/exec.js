@@ -19,7 +19,7 @@ class Exec {
       flow = [
         Git.clone,
         Utils.transform,
-        () => CLONE_SCRIPT,
+        when(CLONE_SCRIPT),
       ];
     } else {
       logger.info(`Copying ${from} to ${to}`);
@@ -28,7 +28,7 @@ class Exec {
         Utils.ls,
         Utils.filterFiles,
         Utils.copyAndTransform,
-        () => COPY_SCRIPT,
+        when(COPY_SCRIPT),
       ];
     }
 
