@@ -9,7 +9,7 @@ const FILE_TEMPLATE_KEYWORD = 'template';
 
 let Utils = {
   ls(data) {
-    let {from} = data;
+    let { from } = data;
 
     logger.verbose(`List files and folders from: ${ from }`);
 
@@ -34,7 +34,7 @@ let Utils = {
   },
 
   filterFiles(data) {
-    let {filesAndFolders} = data;
+    let { filesAndFolders } = data;
 
     logger.verbose('Filter files');
     logger.silly(`from:\n${ JSON.stringify(filesAndFolders, null, 2)}`);

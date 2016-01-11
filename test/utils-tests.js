@@ -52,8 +52,8 @@ let toUpperCase = {
 describe('Utils', () => {
   describe('.ls', () => {
     it('resolves with and object that contains the key "filesAndFolders"', () => {
-      return Utils.ls({from: TEST_ASSESTS_FOLDER_INIT})
-      .then(({filesAndFolders}) => {
+      return Utils.ls({ from: TEST_ASSESTS_FOLDER_INIT })
+      .then(({ filesAndFolders }) => {
         expect(filesAndFolders).to.deep.equal(FILES_AND_FOLDERS_PATH);
       });
     });
@@ -61,8 +61,8 @@ describe('Utils', () => {
 
   describe('.filterFiles', () => {
     it('returns only package.json', () => {
-      return Utils.filterFiles({filesAndFolders: FILES_AND_FOLDERS_PATH})
-      .then(({files}) => {
+      return Utils.filterFiles({ filesAndFolders: FILES_AND_FOLDERS_PATH })
+      .then(({ files }) => {
         expect(files).to.deep.equal([FILES_AND_FOLDERS_PATH[1]]);
       });
     });
