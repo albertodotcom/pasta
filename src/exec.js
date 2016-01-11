@@ -6,7 +6,8 @@ let Git = require('./git');
 let { Transform } = require('./transform');
 let { logger } = require('./logger');
 
-const SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
+const COPY_SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
+const CLONE_SCRIPT = `npm install`;
 const FROM = path.join(__dirname, '..', 'templates');
 
 class Exec {
@@ -14,15 +15,20 @@ class Exec {
     let flow = [];
 
     if (Utils.isRepo(from)) {
+      logger.info(`Cloning ${from} to ${to}`);
       flow = [
-        Git.clone(from),
+        Git.clone,
         Utils.transform,
+        () => CLONE_SCRIPT,
       ];
     } else {
+      logger.info(`Copying ${from} to ${to}`);
+
       flow = [
         Utils.ls,
         Utils.filterFiles,
         Utils.copyAndTransform,
+        () => COPY_SCRIPT,
       ];
     }
 
@@ -46,7 +52,7 @@ class Exec {
     logger.verbose(`with the following configurations:\n${JSON.stringify(execTrain, null, 2)}`);
 
     return this._copy(execTrain)
-    .then(() => {
+    .then((SCRIPT) => {
       logger.verbose(`Change current working directory to: "${to}"`);
       process.chdir(to);
       Utils.executeScript(SCRIPT);

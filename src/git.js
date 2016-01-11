@@ -1,8 +1,8 @@
 let Nodegit = require('nodegit');
 
 let Git = {
-  clone(repo, dest) {
-    return Nodegit.Clone(repo, dest);
+  clone({from, to}) {
+    return Nodegit.Clone(from, to);
   },
 };
 

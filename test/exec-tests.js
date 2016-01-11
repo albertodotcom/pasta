@@ -19,7 +19,8 @@ const GIT_REPO = 'https://github.com/albertodotcom/react-template';
 const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/init');
 const TEMPLATES_FOLDER = path.join(__dirname, '../templates/');
 const TMP_FOLDER = path.join(__dirname, '../tmp/');
-const SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
+const COPY_SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
+const CLONE_SCRIPT = `npm install`;
 
 describe('exec', () => {
   describe('._copy', () => {
@@ -69,7 +70,6 @@ describe('exec', () => {
 
   describe('.new', () => {
     beforeEach(() => {
-      sinon.stub(exec, '_copy').returns(Promise.resolve());
       sinon.stub(process, 'chdir').returns(null);
       sinon.stub(UtilsStub, 'executeScript').returns(null);
     });
@@ -81,6 +81,8 @@ describe('exec', () => {
     });
 
     it('calls copy with `from` git repo, to the `dest` folder, and Transform function, then executes a script', () => {
+      sinon.stub(exec, '_copy').returns(Promise.resolve(COPY_SCRIPT));
+
       let from = GIT_REPO;
       let to = path.join(TMP_FOLDER, 'init');
 
@@ -96,7 +98,16 @@ describe('exec', () => {
         // here I shouldn't know about Transform implementation details
         expect(execCopyArgs.transform.replacer.appName).to.equal('newApp');
 
-        expect(UtilsStub.executeScript.args[0][0]).to.be.equal(SCRIPT);
+        expect(UtilsStub.executeScript.args[0][0]).to.be.equal(COPY_SCRIPT);
+      });
+    });
+
+    it('calls the clone script if from is a repo', () => {
+      sinon.stub(exec, '_copy').returns(Promise.resolve(CLONE_SCRIPT));
+
+      return exec.new(['newApp', 'http://gitrepo.com/blah', 'tmp/init'])
+      .then(() => {
+        expect(UtilsStub.executeScript.args[0][0]).to.be.equal(CLONE_SCRIPT);
       });
     });
   });

@@ -196,4 +196,33 @@ describe('Utils', () => {
       });
     });
   });
+
+  describe('.isRepo', () => {
+    it('returns true for every protocol', () => {
+      let protocols = [
+        'ssh://[user@]host.xz[:port]/path/to/repo.git/',
+        'git://host.xz[:port]/path/to/repo.git/',
+        'http://host.xz[:port]/path/to/repo',
+        'https://host.xz[:port]/path/to/repo.git/',
+        'ftp://host.xz[:port]/path/to/repo.git/',
+        'ftps://host.xz[:port]/path/to/repo.git/',
+        'rsync://host.xz/path/to/repo',
+      ];
+
+      protocols.forEach(protocol => {
+        expect(Utils.isRepo(protocol)).to.true;
+      });
+    });
+
+    it('returns false for a folder', () => {
+      let folders = [
+        '.',
+        __dirname,
+      ];
+
+      folders.forEach(protocol => {
+        expect(Utils.isRepo(protocol)).to.false;
+      });
+    });
+  });
 });

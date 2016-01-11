@@ -17,7 +17,7 @@ describe('Git', () => {
     it('calls Nodegit.Clone with repo and dest', () => {
       let repo = 'http://myrepo';
       let dest = 'destFolder';
-      return Git.clone(repo, dest)
+      return Git.clone({from: repo, to: dest})
       .then(() => {
         expect(Nodegit.Clone.calledWith(repo, dest)).to.true;
       });

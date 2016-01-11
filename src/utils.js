@@ -140,6 +140,11 @@ let Utils = {
     return Process.spawnExec(script);
   },
 
+  isRepo(repoOrfolder) {
+    let gitTest = /^(https?|git|ssh|ftps?|rsync):\/\/\S+?/;
+    return gitTest.test(repoOrfolder);
+  },
+
 };
 
 module.exports = Utils;
