@@ -2,6 +2,7 @@ let { expect } = require('chai');
 let path = require('path');
 let sinon = require('sinon');
 let prequire = require('proxyquire');
+let fsExtra = require('fs-extra');
 
 let shellStub = {};
 
@@ -71,13 +72,15 @@ describe('Utils', () => {
   describe('.copyAndTransform', () => {
     beforeEach(() => {
       sinon.spy(Utils, 'transform');
+      sinon.spy(Utils, 'readTransformWrite');
     });
 
     afterEach(() => {
       Utils.transform.restore();
+      Utils.readTransformWrite.restore();
     });
 
-    it('calls readFile, transform and writeFile for each file', () => {
+    it('calls readTransformWrite for each file', () => {
       let data = {
         from: TEST_ASSESTS_FOLDER_INIT,
         to: path.join(TMP_FOLDER, 'init'),
@@ -93,7 +96,7 @@ describe('Utils', () => {
 
       return Utils.copyAndTransform(data)
       .then((resultFilePaths) => {
-        expect(Utils.transform.calledOnce).to.true;
+        expect(Utils.readTransformWrite.calledOnce).to.true;
         expect(resultFilePaths).to.deep.equal([path.join(TMP_FOLDER, 'init/package.json')]);
       });
     });
@@ -129,6 +132,46 @@ describe('Utils', () => {
           path.join(TMP_FOLDER, 'components/Pesto.js'),
           path.join(TMP_FOLDER, 'components/Pesto-tests.js'),
         ]);
+      });
+    });
+  });
+
+  describe('.transformInPlace', () => {
+    const OUTPUTFILE = path.join(TMP_FOLDER, 'baz', 'foo.js');
+
+    beforeEach(() => {
+      sinon.spy(Utils, 'ls');
+      sinon.spy(Utils, 'filterFiles');
+      sinon.stub(Utils, 'readTransformWrite').returns(Promise.resolve());
+
+      fsExtra.outputFileSync(OUTPUTFILE, 'hello world');
+    });
+
+    afterEach(() => {
+      Utils.ls.restore();
+      Utils.filterFiles.restore();
+      Utils.readTransformWrite.restore();
+
+      fsExtra.removeSync(OUTPUTFILE);
+    });
+
+    it('calls ls, filterFiles and then readTransformWrite for every file', () => {
+      let data = {
+        from: 'http://fancyRepo',
+        to: path.join(TMP_FOLDER, 'baz'),
+      };
+
+      return Utils.transformInPlace(data)
+      .then(() => {
+        expect(Utils.ls.args[0][0].from).to.equal(data.to);
+        expect(Utils.filterFiles.calledOnce).to.true;
+
+        let rtwArgs = Utils.readTransformWrite.args[0];
+
+        expect(rtwArgs[0]).to.equal(OUTPUTFILE);
+        expect(rtwArgs[1]).to.have.deep.property('from', data.to);
+        expect(rtwArgs[1]).to.have.deep.property('to', data.to);
+        expect(rtwArgs[1].files).to.deep.equal([OUTPUTFILE]);
       });
     });
   });

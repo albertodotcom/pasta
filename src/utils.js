@@ -56,8 +56,26 @@ let Utils = {
     });
   },
 
+  readTransformWrite(file, data) {
+    let { transform, from, to, outputFileName } = data;
+
+    return Utils.readFile(file)
+    .then((fileContent) => {
+      if (transform == null) {
+        return fileContent;
+      }
+
+      logger.verbose(`Transform: "${file}"`);
+      return Utils.transform(fileContent, transform);
+    })
+    .then((transformedFileContent) => {
+      let newFilePath = Utils.outputFilePath(from, to, file, outputFileName);
+      return Utils.writeFile(newFilePath, transformedFileContent);
+    });
+  },
+
   copyAndTransform(data) {
-    let {files, transform, from, to, outputFileName} = data;
+    let { files, transform, from, to } = data;
 
     logger.verbose(`Copy and transform from "${ from }" to "${ to }, with:\n${ JSON.stringify(data, null, 2) }"`);
     logger.silly(`Copy and transform the following files:\n${JSON.stringify(files, null, 2)}`);
@@ -67,23 +85,20 @@ let Utils = {
     }
 
     return when.all(files.map((file) => {
-      return Utils.readFile(file)
-      .then((fileContent) => {
-        if (transform == null) {
-          return fileContent;
-        }
+      return Utils.readTransformWrite(file, data);
+    }));
+  },
 
-        logger.verbose(`Transform: "${file}"`);
-        return Utils.transform(fileContent, transform);
-      })
-      .then((transformedFileContent) => {
-        let newFilePath = Utils.outputFilePath(from, to, file, outputFileName);
-        return Utils.writeFile(newFilePath, transformedFileContent);
-      });
-    }))
-    .then((createdFilePaths) => {
-      logger.info(`Created the following files:\n${createdFilePaths.join('\n')}`);
-      return createdFilePaths;
+  transformInPlace(data) {
+    // all the replacement happens in the 'to' folder
+    let replaceData = Object.assign({}, data, { from: data.to });
+
+    return Utils.ls(replaceData)
+    .then(Utils.filterFiles)
+    .then((data) => {
+      return when.all(data.files.map((file) => {
+        return Utils.readTransformWrite(file, replaceData);
+      }));
     });
   },
 
@@ -95,7 +110,6 @@ let Utils = {
 
         resolve(data);
       });
-
     });
   },
 

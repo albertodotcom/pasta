@@ -4,6 +4,7 @@ class Transform {
   }
 
   transform(fileContent) {
+    // special comment is ||| MyComponent -> componentName
     let findSpecialComment = /\|\|\|\s([\S]+?)\s->\s([\S]+)/;
 
     return new Promise((res) => {

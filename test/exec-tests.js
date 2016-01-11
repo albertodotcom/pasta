@@ -19,8 +19,7 @@ const GIT_REPO = 'https://github.com/albertodotcom/react-template';
 const TEST_ASSESTS_FOLDER = path.join(__dirname, './assets/init');
 const TEMPLATES_FOLDER = path.join(__dirname, '../templates/');
 const TMP_FOLDER = path.join(__dirname, '../tmp/');
-const COPY_SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
-const CLONE_SCRIPT = `npm install`;
+const SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
 
 describe('exec', () => {
   describe('._copy', () => {
@@ -29,7 +28,8 @@ describe('exec', () => {
       sinon.spy(UtilsStub, 'filterFiles');
       sinon.spy(UtilsStub, 'copyAndTransform');
       sinon.stub(GitStub, 'clone').returns(Promise.resolve());
-      sinon.stub(UtilsStub, 'transform').returns(Promise.resolve());
+      sinon.stub(GitStub, 'cleanGitFolder').returns(Promise.resolve());
+      sinon.stub(UtilsStub, 'transformInPlace').returns(Promise.resolve());
     });
 
     afterEach(() => {
@@ -37,7 +37,8 @@ describe('exec', () => {
       UtilsStub.filterFiles.restore();
       UtilsStub.copyAndTransform.restore();
       GitStub.clone.restore();
-      UtilsStub.transform.restore();
+      GitStub.cleanGitFolder.restore();
+      UtilsStub.transformInPlace.restore();
     });
 
     it('calls ls, filterFiles, copyAndTransform form Utils', () => {
@@ -54,7 +55,7 @@ describe('exec', () => {
       });
     });
 
-    it('calls Git.clone and Utils.transform when Utils.isRepo returns true', () => {
+    it('calls Git.clone and Utils.transformInPlace when Utils.isRepo returns true', () => {
       UtilsStub.isRepo = () => true;
 
       return exec._copy({
@@ -63,7 +64,7 @@ describe('exec', () => {
       })
       .then(() => {
         expect(GitStub.clone.calledOnce).to.true;
-        expect(UtilsStub.transform.calledOnce).to.true;
+        expect(UtilsStub.transformInPlace.calledOnce).to.true;
       });
     });
   });
@@ -81,7 +82,7 @@ describe('exec', () => {
     });
 
     it('calls copy with `from` git repo, to the `dest` folder, and Transform function, then executes a script', () => {
-      sinon.stub(exec, '_copy').returns(Promise.resolve(COPY_SCRIPT));
+      sinon.stub(exec, '_copy').returns(Promise.resolve(SCRIPT));
 
       let from = GIT_REPO;
       let to = path.join(TMP_FOLDER, 'init');
@@ -98,16 +99,16 @@ describe('exec', () => {
         // here I shouldn't know about Transform implementation details
         expect(execCopyArgs.transform.replacer.appName).to.equal('newApp');
 
-        expect(UtilsStub.executeScript.args[0][0]).to.be.equal(COPY_SCRIPT);
+        expect(UtilsStub.executeScript.args[0][0]).to.be.equal(SCRIPT);
       });
     });
 
-    it('calls the clone script if from is a repo', () => {
-      sinon.stub(exec, '_copy').returns(Promise.resolve(CLONE_SCRIPT));
+    it('executes the script if from is a repo', () => {
+      sinon.stub(exec, '_copy').returns(Promise.resolve(SCRIPT));
 
       return exec.new(['newApp', 'http://gitrepo.com/blah', 'tmp/init'])
       .then(() => {
-        expect(UtilsStub.executeScript.args[0][0]).to.be.equal(CLONE_SCRIPT);
+        expect(UtilsStub.executeScript.args[0][0]).to.be.equal(SCRIPT);
       });
     });
   });
