@@ -2,6 +2,7 @@ let when = require('when');
 let path = require('path');
 
 let Utils = require('./utils');
+let Git = require('./git');
 let { Transform } = require('./transform');
 let { logger } = require('./logger');
 
@@ -10,23 +11,32 @@ const FROM = path.join(__dirname, '..', 'templates');
 
 class Exec {
   _copy({from, to, transform, outputFileName}) {
-    let flow = [
-      Utils.ls,
-      Utils.filterFiles,
-      Utils.copyAndTransform,
-    ];
+    let flow = [];
+
+    if (Utils.isRepo(from)) {
+      flow = [
+        Git.clone(from),
+        Utils.transform,
+      ];
+    } else {
+      flow = [
+        Utils.ls,
+        Utils.filterFiles,
+        Utils.copyAndTransform,
+      ];
+    }
 
     return flow.reduce(function (soFar, f) {
       return soFar.then(f);
     }, when({from, to, transform, outputFileName}));
   }
 
-  new([name, destFolder = '.']) {
+  new([name, from, destFolder = '.']) {
     let to = path.join(process.cwd(), destFolder);
 
     let execTrain = {
-      from: path.join(FROM, 'new'),
-      to: to,
+      from,
+      to,
       transform: new Transform({
         appName: name,
       }),
