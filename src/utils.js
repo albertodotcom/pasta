@@ -57,12 +57,16 @@ let Utils = {
   },
 
   readTransformWrite(file, data) {
-    let { transform, from, to, outputFileName } = data;
+    let { transform, from, to, outputFileName, excludeTransformPath } = data;
 
     return Utils.readFile(file)
     .then((fileContent) => {
-      if (transform == null) {
-        return fileContent;
+      let skipTransform = transform == null ||
+                          (excludeTransformPath instanceof RegExp && excludeTransformPath.test(file));
+      if (skipTransform) {
+        logger.verbose(`Skip Transform: "${file}"`);
+
+        return Promise.resolve(fileContent);
       }
 
       logger.verbose(`Transform: "${file}"`);
@@ -114,7 +118,7 @@ let Utils = {
   },
 
   writeFile(filePath, data) {
-    logger.silly(`Write: "${ filePath }"`);
+    logger.verbose(`Write: "${ filePath }"`);
     return new Promise((resolve, reject) => {
       fsExtra.outputFile(filePath, data, (err) => {
         if (err != null) return reject(err);

@@ -10,7 +10,7 @@ const SCRIPT = `npm install && git init && git add --all && git commit -m "Creat
 
 class Exec {
   _copy(data) {
-    let { from, to, transform, outputFileName } = data;
+    let { from, to, transform, outputFileName, excludeTransformPath } = data;
     let flow = [];
 
     if (Utils.isRepo(from)) {
@@ -33,7 +33,7 @@ class Exec {
 
     return flow.reduce(function (soFar, f) {
       return soFar.then(f);
-    }, when({ from, to, transform, outputFileName }));
+    }, when({ from, to, transform, outputFileName, excludeTransformPath }));
   }
 
   new([name, from, destFolder]) {
@@ -45,6 +45,7 @@ class Exec {
       transform: new Transform({
         appName: name,
       }),
+      excludeTransformPath: new RegExp(path.join(to, '/templates/\S*'), 'i'),
     };
 
     logger.info('Start a new project');

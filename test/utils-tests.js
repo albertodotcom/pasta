@@ -69,6 +69,69 @@ describe('Utils', () => {
     });
   });
 
+  describe('.readTransformWrite', () => {
+    let file = FILES_AND_FOLDERS_PATH[1];
+
+    let data = {
+      from: TEST_ASSESTS_FOLDER_INIT,
+      to: path.join(TMP_FOLDER, 'init'),
+      files: FILES_AND_FOLDERS_PATH.slice(1),
+      transform: {
+        transform: (fileContent) => {
+          return new Promise((res) => {
+            return res(fileContent);
+          });
+        },
+      },
+    };
+
+    beforeEach(() => {
+      sinon.spy(Utils, 'readFile');
+      sinon.spy(Utils, 'transform');
+      sinon.spy(Utils, 'outputFilePath');
+      sinon.spy(Utils, 'writeFile');
+    });
+
+    afterEach(() => {
+      Utils.readFile.restore();
+      Utils.transform.restore();
+      Utils.outputFilePath.restore();
+      Utils.writeFile.restore();
+    });
+
+    it('calls read transform outputFilePath and write', () => {
+      return Utils.readTransformWrite(file, data)
+      .then(() => {
+        expect(Utils.readFile.calledOnce).to.true;
+        expect(Utils.transform.calledOnce).to.true;
+        expect(Utils.outputFilePath.calledOnce).to.true;
+        expect(Utils.writeFile.calledOnce).to.true;
+      });
+    });
+
+    it('calls read outputFilePath and write, but not transform, if transform is null', () => {
+      let testData = Object.assign({}, data, { transform: null });
+      return Utils.readTransformWrite(file, testData)
+      .then(() => {
+        expect(Utils.readFile.calledOnce).to.true;
+        expect(Utils.transform.calledOnce).to.false;
+        expect(Utils.outputFilePath.calledOnce).to.true;
+        expect(Utils.writeFile.calledOnce).to.true;
+      });
+    });
+
+    it('calls read outputFilePath and write, but not transform, if excludeTransformPath match', () => {
+      let testData = Object.assign({}, data, { excludeTransformPath: new RegExp('/init', 'ig') });
+      return Utils.readTransformWrite(file, testData)
+      .then(() => {
+        expect(Utils.readFile.calledOnce).to.true;
+        expect(Utils.transform.calledOnce).to.false;
+        expect(Utils.outputFilePath.calledOnce).to.true;
+        expect(Utils.writeFile.calledOnce).to.true;
+      });
+    });
+  });
+
   describe('.copyAndTransform', () => {
     beforeEach(() => {
       sinon.spy(Utils, 'transform');
