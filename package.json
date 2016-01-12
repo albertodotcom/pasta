@@ -2,7 +2,7 @@
   "name": "pasta",
   "version": "0.0.1",
   "description": "Terminal App for scaffolding and creating files based on templates",
-  "main": "index.js",
+  "main": "./lib/cli.js",
   "bin": {
     "pasta": "./bin/pasta"
   },
