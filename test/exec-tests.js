@@ -131,10 +131,12 @@ describe('exec', () => {
 
   describe('.create', () => {
     beforeEach(() => {
+      sinon.stub(UtilsStub, 'checkFolderExists').returns(Promise.resolve(true));
       sinon.stub(exec, '_copy').returns(Promise.resolve());
     });
 
     afterEach(() => {
+      UtilsStub.checkFolderExists.restore();
       exec._copy.restore();
     });
 

@@ -7,7 +7,6 @@ let { Transform } = require('./transform');
 let { logger } = require('./logger');
 
 const SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
-const FROM = path.join(__dirname, '..', 'templates');
 
 class Exec {
   _copy(data) {
@@ -64,7 +63,7 @@ class Exec {
     let destFolder = path.join(process.cwd(), 'app', type + 's');
 
     let execTrain = {
-      from: path.join(FROM, 'create', type),
+      from: path.join(process.cwd(), 'templates', 'create', type),
       to: destFolder,
       transform: new Transform({
         componentName: name,
@@ -75,7 +74,12 @@ class Exec {
     logger.info(`Create the "${type}" named: "${name}"`);
     logger.verbose(`with the following configurations:\n${JSON.stringify(execTrain, null, 2)}`);
 
-    return this._copy(execTrain);
+    return Utils.checkFolderExists(execTrain.from)
+    .then(() => {
+      return this._copy(execTrain);
+    }).catch((err) => {
+      logger.info(err);
+    });
   }
 }
 

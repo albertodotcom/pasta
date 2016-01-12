@@ -159,6 +159,20 @@ let Utils = {
     return gitTest.test(repoOrfolder);
   },
 
+  checkFolderExists(path) {
+    return new Promise((resolve, reject) => {
+      fsExtra.stat(path, (err, stats) => {
+        if (err) return reject(`"${path}" doesn't exist`);
+
+        if (stats.isDirectory()) {
+          return resolve(true);
+        } else {
+          return reject(`"${path}" is a file not a folder`);
+        }
+      });
+    });
+  },
+
 };
 
 module.exports = Utils;

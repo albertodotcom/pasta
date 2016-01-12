@@ -268,4 +268,31 @@ describe('Utils', () => {
       });
     });
   });
+
+  describe('.checkFolderExists', () => {
+    it('rejects the promise if a folder doesnt exist', () => {
+      let notExistingFolder = path.join(__dirname, './folderNotExist');
+
+      return Utils.checkFolderExists(notExistingFolder)
+      .catch((err) => {
+        expect(err).to.equal(`"${notExistingFolder}" doesn't exist`);
+      });
+    });
+
+    it('rejects the promise if the path is a file', () => {
+      let filePath = path.join(TEST_ASSESTS_FOLDER_INIT, 'package.json');
+
+      return Utils.checkFolderExists(filePath)
+      .catch((err) => {
+        expect(err).to.equal(`"${filePath}" is a file not a folder`);
+      });
+    });
+
+    it('resolves the promise if the path is a folder', () => {
+      return Utils.checkFolderExists(__dirname)
+      .then((isFolder) => {
+        expect(isFolder).to.true;
+      });
+    });
+  });
 });
