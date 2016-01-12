@@ -41,7 +41,7 @@ This command creates a new project project based on a folder or, more likely, an
 For instance `pasta new memory https://github.com/albertodotcom/react-template.git` will:
 
 1. create a new project in the `./memory` folder by cloning the github repo;
-2. apply a trasformation to every file content using **memory** as **appName**. See the [transformation section](# Trasform);
+2. apply a trasformation to every file content using **memory** as **appName**. See the [transformation section](#trasform);
 3. execute `npm install && git init && git add --all && git commit -m "Create scaffold project"`
 
 ### `pasta create`
@@ -57,7 +57,7 @@ templates
 With this structure in place you can type `pasta create name Pesto` and `pasta` will:
 1. copy all the files from `name/` folder to `./src/names/` (notice there is a *s*)
 2. replace the files that have the `template` keyword with `Pesto`
-3. transform the file content of every file using the process described at point 2 and 3 of the [transformation section](# Trasform)
+3. transform the file content of every file using the process described at point 2 and 3 of the [transformation section](#trasform)
 
 ## Trasform
 both `new` and `create` commands are meant to perform file trasformations.
