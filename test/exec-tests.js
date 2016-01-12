@@ -142,7 +142,7 @@ describe('exec', () => {
 
     it('copies the files from the `from` folder to the `dest` folder', () => {
       let from = TEMPLATES_FOLDER;
-      let to = path.join(process.cwd(), 'app', 'components');
+      let to = path.join(process.cwd(), 'src', 'components');
 
       return exec.create(['component', 'TopBar'])
       .then(() => {

@@ -61,7 +61,7 @@ class Exec {
 
   create([type, name]) {
     // TODO use a plural library
-    let destFolder = path.join(process.cwd(), 'app', type + 's');
+    let destFolder = path.join(process.cwd(), 'src', type + 's');
 
     let execTrain = {
       from: path.join(process.cwd(), 'templates', 'create', type),
