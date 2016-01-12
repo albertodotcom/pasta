@@ -5,7 +5,7 @@ let Process = require('./utils/process');
 
 let { logger } = require('./logger');
 
-const FILE_TEMPLATE_KEYWORD = 'template';
+const FILE_TEMPLATE_KEYWORD = new RegExp('(\\btemplate\\b)(?!.*\\b\\1\\b)', 'i');
 
 let Utils = {
   ls(data) {

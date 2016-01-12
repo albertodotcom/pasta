@@ -290,6 +290,17 @@ describe('Utils', () => {
 
       expect(outputFilePath).to.equal(path.join(TMP_FOLDER_TARGET, 'create', 'component', 'Lasagne-test.js'));
     });
+
+    it('returns the expected path', () => {
+      let outputFilePath = Utils.outputFilePath(
+        '/Users/aforni/Projects/sandbox/memory/templates/create/component',
+        '/Users/aforni/Projects/sandbox/memory/src/components',
+        '/Users/aforni/Projects/sandbox/memory/templates/create/component/template.js',
+        'Ragu'
+      );
+
+      expect(outputFilePath).to.equal('/Users/aforni/Projects/sandbox/memory/src/components/Ragu.js');
+    });
   });
 
   describe('.executeScript', () => {
