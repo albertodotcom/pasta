@@ -1,17 +1,17 @@
 let { expect } = require('chai');
 let sinon = require('sinon');
-let Nodegit = require('nodegit');
+let Utils = require('../src/utils');
 
 let Git = require('../src/git');
 
 describe('Git', () => {
   describe('.clone', () => {
     beforeEach(() => {
-      sinon.stub(Nodegit, 'Clone').returns(Promise.resolve());
+      sinon.stub(Utils, 'executeScript').returns(Promise.resolve());
     });
 
     afterEach(() => {
-      Nodegit.Clone.restore();
+      Utils.executeScript.restore();
     });
 
     it('calls Nodegit.Clone with repo and dest', () => {
@@ -19,7 +19,7 @@ describe('Git', () => {
       let dest = 'destFolder';
       return Git.clone({ from: repo, to: dest })
       .then(() => {
-        expect(Nodegit.Clone.calledWith(repo, dest)).to.true;
+        expect(Utils.executeScript.calledWith(`git clone ${repo} ${dest}`)).to.true;
       });
     });
   });

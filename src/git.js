@@ -1,13 +1,14 @@
-let Nodegit = require('nodegit');
 let fsExtra = require('fs-extra');
 let path = require('path');
+let Utils = require('./utils');
 
 let { logger } = require('./logger');
 
 let Git = {
   clone(data) {
     let { from, to } = data;
-    return Nodegit.Clone(from, to).then(() => data);
+    return Utils.executeScript(`git clone ${from} ${to}`)
+    .then(() => data);
   },
 
   cleanGitFolder(data) {
