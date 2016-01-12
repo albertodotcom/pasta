@@ -1,5 +1,5 @@
 {
-  "name": "pasta",
+  "name": "pasta-templates",
   "version": "0.0.1",
   "description": "Terminal App for scaffolding and creating files based on templates",
   "main": "./lib/cli.js",
