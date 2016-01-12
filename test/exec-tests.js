@@ -71,6 +71,7 @@ describe('exec', () => {
 
   describe('.new', () => {
     beforeEach(() => {
+      sinon.stub(exec, '_copy').returns(Promise.resolve(SCRIPT));
       sinon.stub(process, 'chdir').returns(null);
       sinon.stub(UtilsStub, 'executeScript').returns(null);
     });
@@ -82,7 +83,6 @@ describe('exec', () => {
     });
 
     it('calls copy with `from` git repo, to the `dest` folder, and Transform function, then executes a script', () => {
-      sinon.stub(exec, '_copy').returns(Promise.resolve(SCRIPT));
 
       let from = GIT_REPO;
       let to = path.join(TMP_FOLDER, 'init');
@@ -104,11 +104,27 @@ describe('exec', () => {
     });
 
     it('executes the script if from is a repo', () => {
-      sinon.stub(exec, '_copy').returns(Promise.resolve(SCRIPT));
-
       return exec.new(['newApp', 'http://gitrepo.com/blah', 'tmp/init'])
       .then(() => {
         expect(UtilsStub.executeScript.args[0][0]).to.be.equal(SCRIPT);
+      });
+    });
+
+    it('uses the name to build up the default destFolder', () => {
+      return exec.new(['newApp', 'http://gitrepo.com'])
+      .then(() => {
+        let exepectedDestFolder = path.join(process.cwd(), 'newApp');
+
+        expect(exec._copy.args[0][0].to).to.equal(exepectedDestFolder);
+      });
+    });
+
+    it('uses the destFolder if defined to build up the to folder', () => {
+      return exec.new(['newApp', 'http://gitrepo.com', 'hello'])
+      .then(() => {
+        let exepectedDestFolder = path.join(process.cwd(), 'hello');
+
+        expect(exec._copy.args[0][0].to).to.equal(exepectedDestFolder);
       });
     });
   });

@@ -16,6 +16,7 @@ class Exec {
 
     if (Utils.isRepo(from)) {
       logger.info(`Cloning ${from} to ${to}`);
+
       flow = [
         Git.clone,
         Git.cleanGitFolder,
@@ -36,8 +37,8 @@ class Exec {
     }, when({ from, to, transform, outputFileName }));
   }
 
-  new([name, from, destFolder = '.']) {
-    let to = path.join(process.cwd(), destFolder);
+  new([name, from, destFolder]) {
+    let to = path.join(process.cwd(), destFolder || name);
 
     let execTrain = {
       from,
