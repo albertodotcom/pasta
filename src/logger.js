@@ -18,7 +18,7 @@ class Cli extends winston.Transport{
           process.stderr.write(stack + '\n\n');
         }
 
-        for (key in meta) {
+        for (let key in meta) {
           let value = meta[key];
           if (key === 'message' || key === 'stack') {
             continue;
@@ -47,7 +47,7 @@ class Cli extends winston.Transport{
 }
 
 let transports = [
-  new Cli({level: 'info'}),
+  new Cli({ level: 'info' }),
 ];
 
 let logger = new winston.Logger({

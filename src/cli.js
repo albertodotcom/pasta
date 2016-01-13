@@ -38,7 +38,7 @@ let CLI = {
     }
 
     if (opts.verbose) {
-      if ('-vv' in argv) {
+      if (argv.indexOf('-vv') !== -1) {
         logger.transports.cli.level = 'silly';
       } else {
         logger.transports.cli.level = 'verbose';
