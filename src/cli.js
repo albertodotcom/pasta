@@ -8,7 +8,7 @@ let usage = `
 
   commands:
 
-    ${ chalk.bold('new') } <name> <srcFolder or gitRepo> [path] - create a scaffold project. Default path ./<name>
+    ${ chalk.bold('new') } <name> <srcFolder or gitRepo> [destFolder] - create a scaffold project. Default destination folder path ./<name>
     ${ chalk.bold('create') } <template> <name> - create a set of files based on specific templates
 
     ${ chalk.bold('help') } - Display the available options

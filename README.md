@@ -8,10 +8,12 @@ Pasta allows developers to scaffold applications, or files based on their templa
 The project is not ready yet. Some of the functionalities are still missing
 
 - [ ] Use local configuartions files to drive
-  - transformations
-  - `src` and `dest` file paths
+    - [ ] transformations
+    - [X] `src` and `dest` file paths
+    - [ ] initial script
 - [ ] Imporve logging
 - [ ] Imporve error handling and test coverage
+- [ ] Imporve cli usage
 
 ## Crazy eary adopters
 If you feel really brave and you want to use it, type
@@ -23,7 +25,7 @@ usage: pasta [options] [command]
 
 commands:
 
-  new <name> <srcFolder or gitRepo> [path] - create a scaffold project. Default path ./<name>
+  new <name> <srcFolder or gitRepo> [destFolder] - create a scaffold project. Default destination folder path ./<name>
   create <template> <name> - create a set of files based on specific templates
 
   help - Display the available options
@@ -36,34 +38,55 @@ global options:
 
 ## Commands
 ### `pasta new`
-This command creates a new project project based on a folder or, more likely, an existing git repo.
+This `pasta new` command creates a new project based on a folder or, more likely, an existing git repo.
 
 For instance `pasta new memory https://github.com/albertodotcom/react-template.git` will:
 
-1. create a new project in the `./memory` folder by cloning the github repo;
+1. create a new project in the `./memory` folder by cloning the specified github repo;
 2. apply a trasformation to every file content using **memory** as **appName**. See the [transformation section](#trasform);
 3. execute `npm install && git init && git add --all && git commit -m "Create scaffold project"`
 
 ### `pasta create`
-This command creates new files in the `src` folder.
+The `pasta create` command uses templates to create a whole lot of things.
 For now your current repo needs to have the following structure
 ```
 ...
 templates
 └── create
-    └── name
+    └── component
         └── files...
 ```
-With this structure in place you can type `pasta create name Pesto` and `pasta` will:
-1. copy all the files from `name/` folder to `./src/names/` (notice there is a *s*)
+By default the `src` and the `dest` folders are:
+```
+src => ./templates/create/templateType/
+dest => ./src/templateTypes/
+```
+*note that dest folder is plural*
+
+With this structure in place you can type `pasta create component Pesto` and `pasta` will:
+1. copy all the files from `./templates/create/component/` folder to `./src/components/`
 2. replace the files that have the `template` keyword with `Pesto`
 3. transform the file content of every file using the process described at point 2 and 3 of the [transformation section](#trasform)
 
-## Trasform
+#### Customization
+It is possible to add a custom `src` or `dest` folder by creating a `.pesto.json` in the `./template` folder.
+`.pasta.json`
+```json
+{
+  "create": {
+    "component": {
+      "from": "./test/assets/create/component/",
+      "to": "./src/containers/{componentName}"
+    }
+  }
+}
+```
+
+## Trasformations
 both `new` and `create` commands are meant to perform file trasformations.
-There are 3 types of transformations:
-1. **change file name**, using the `template` keyword in your filename.
-For example assuming you have a `templates` folder like the following:
+There are 2 types of transformations:
+1. **change file name**, using the `template` keyword in the filename itself.
+For example assuming you have a `templates` folder like the following one:
 ```
 ...
 templates
@@ -87,21 +110,7 @@ templates
         └── template.js
 ...
 ```
-2. **string iterpolation**, using *mustache* like syntax.
-For example if you have a `package.json` file like the following
-```json
-{
-  "name": "{{appName}}"
-  ...
-}
-```
-by running `pasta new hello http://yourRepo`, `package.json` will be converted to
-```json
-{
-  "name": "hello"
-}
-```
-3. **comment replacement**, using a comment in the line above the line you would like transform with this format
+2. **comment replacement**, using a comment in the line above the line you would like transform with this format
 `||| nameInTheTemplate -> componentName`
 
 For example if you have a react component in your `templates/create/component` folder like the following
@@ -124,5 +133,5 @@ class Button extends React.Component {
 export default Button;
 ```
 
-**Why the 3rd type of transformation?**
+**I am still thinking about another type of transformation. Why?**
 I would like to leave every template in a working state, so you can have linting on the file and test it.
