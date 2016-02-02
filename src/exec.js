@@ -15,7 +15,7 @@ class Exec {
     let flow = [];
 
     if (Utils.isRepo(from)) {
-      logger.info(`Cloning ${from} to ${to}`);
+      logger.info(`Cloning\nfrom: " ${from}"\nto: "${to}"`);
 
       flow = [
         Git.clone,
@@ -23,7 +23,7 @@ class Exec {
         Utils.transformInPlace,
       ];
     } else {
-      logger.info(`Copying ${from} to ${to}`);
+      logger.info(`Copying\nfrom: "${from}"\nto: "${to}"`);
 
       flow = [
         Utils.ls,
@@ -82,6 +82,10 @@ class Exec {
       outputFileName: name,
       ...createTypeConfig,
     };
+
+    // always use absolute path
+    execTrain.from = path.resolve(execTrain.from);
+    execTrain.to = path.resolve(execTrain.to);
 
     logger.info(`Create the "${type}" named: "${name}"`);
     logger.verbose(`with the following configurations:\n${JSON.stringify(execTrain, null, 2)}`);

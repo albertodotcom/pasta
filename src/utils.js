@@ -140,6 +140,8 @@ let Utils = {
   },
 
   outputFilePath(originFolder, destFolder, oldFilePath, outputFileName) {
+    //TODO REFACTOR this crap
+    //it's really hard to read and debug
     let oldFilePathWithoutTemplate;
 
     if (outputFileName != null) {
@@ -149,7 +151,15 @@ let Utils = {
       oldFilePathWithoutTemplate = oldFilePath;
     }
 
-    return path.join(destFolder, oldFilePathWithoutTemplate.replace(originFolder, ''));
+    let outputFilePath = path.join(
+      destFolder
+      .replace(/\{componentName\}/g, outputFileName),
+      oldFilePathWithoutTemplate
+      .replace(originFolder, '')
+    );
+
+    logger.silly(`Output file path is ${outputFilePath}`);
+    return outputFilePath;
   },
 
   executeScript(script) {
@@ -183,7 +193,7 @@ let Utils = {
 
     try {
       let configJSON = fsExtra.readJsonSync(configFile);
-      logger.verbose(`configJSON = ${configJSON}`);
+      logger.verbose(`configJSON = ${JSON.stringify(configJSON, null, 2)}`);
       return configJSON;
     } catch (e) {
       if (e instanceof SyntaxError) {

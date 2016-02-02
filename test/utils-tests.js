@@ -301,6 +301,17 @@ describe('Utils', () => {
 
       expect(outputFilePath).to.equal('/Users/aforni/Projects/sandbox/memory/src/components/Ragu.js');
     });
+
+    it('returns the path replacing {componentName}', () => {
+      let outputFilePath = Utils.outputFilePath(
+        '/Users/aforni/Projects/sandbox/memory/templates/create/component',
+        '/Users/aforni/Projects/sandbox/memory/src/components/{componentName}',
+        '/Users/aforni/Projects/sandbox/memory/templates/create/component/template.js',
+        'Button'
+      );
+
+      expect(outputFilePath).to.equal('/Users/aforni/Projects/sandbox/memory/src/components/Button/Button.js');
+    });
   });
 
   describe('.executeScript', () => {
