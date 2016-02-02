@@ -1,6 +1,6 @@
 {
   "name": "pasta-templates",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Terminal App for scaffolding and creating files based on templates",
   "main": "./lib/cli.js",
   "bin": {
