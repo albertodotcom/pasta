@@ -396,7 +396,7 @@ describe('Utils', () => {
 
     it('returns an error if the file is not well formatted', () => {
       expect(() => Utils.loadConfigFile(path.join(__dirname, 'assets'), '.pastaBroken.json'))
-      .to.throw('/Users/aforni/Projects/pasta/test/assets/.pastaBroken.json is not valid json');
+      .to.throw(`${path.resolve(__dirname, '/test/assets/.pastaBroken.json')} is not valid json`);
     });
 
     it('returns an empty object if the config file does not exists', () => {
