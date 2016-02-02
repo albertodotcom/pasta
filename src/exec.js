@@ -1,5 +1,6 @@
 let when = require('when');
 let path = require('path');
+let plural = require('plural');
 
 let Utils = require('./utils');
 let Git = require('./git');
@@ -60,16 +61,26 @@ class Exec {
   }
 
   create([type, name]) {
-    // TODO use a plural library
-    let destFolder = path.join(process.cwd(), 'src', type + 's');
+    // load config file
+    let createConfig = Utils.loadConfigFile(path.join(process.cwd(), 'templates'));
 
+    let createTypeConfig;
+    try {
+      createTypeConfig = createConfig.create[type];
+    } catch(e) {
+      logger.verbose(`createConfig.create[${type}] is not present in the config file`);
+      createTypeConfig = {};
+    }
+
+    // merge config file with execTrain default
     let execTrain = {
       from: path.join(process.cwd(), 'templates', 'create', type),
-      to: destFolder,
+      to: path.join(process.cwd(), 'src', plural(type)),
       transform: new Transform({
         componentName: name,
       }),
       outputFileName: name,
+      ...createTypeConfig,
     };
 
     logger.info(`Create the "${type}" named: "${name}"`);

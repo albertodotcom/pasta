@@ -1,0 +1,7 @@
+{
+  "create": {
+    "component": {
+      "from": "./test/assets/create/component/",
+      "to": "./src/containers/"
+    }
+}

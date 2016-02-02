@@ -177,6 +177,28 @@ let Utils = {
     });
   },
 
+  loadConfigFile(pathToConfigFile, configFileName = '.pasta.json') {
+    logger.info(`Load .pasta.config from: ${pathToConfigFile}`);
+    let configFile = path.join(pathToConfigFile, configFileName);
+
+    try {
+      let configJSON = fsExtra.readJsonSync(configFile);
+      logger.verbose(`configJSON = ${configJSON}`);
+      return configJSON;
+    } catch (e) {
+      if (e instanceof SyntaxError) {
+        throw new Error(`${configFile} is not valid json`);
+      }
+
+      if (e.code === 'ENOENT') {
+        logger.info('.pasta.json is not available in "./templates" folder');
+        return null;
+      }
+
+      throw new Error(e);
+    }
+  },
+
 };
 
 module.exports = Utils;

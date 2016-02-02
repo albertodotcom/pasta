@@ -133,11 +133,13 @@ describe('exec', () => {
     beforeEach(() => {
       sinon.stub(UtilsStub, 'checkFolderExists').returns(Promise.resolve(true));
       sinon.stub(exec, '_copy').returns(Promise.resolve());
+      sinon.spy(UtilsStub, 'loadConfigFile');
     });
 
     afterEach(() => {
       UtilsStub.checkFolderExists.restore();
       exec._copy.restore();
+      UtilsStub.loadConfigFile.restore();
     });
 
     it('copies the files from the `from` folder to the `dest` folder', () => {
@@ -146,6 +148,8 @@ describe('exec', () => {
 
       return exec.create(['component', 'TopBar'])
       .then(() => {
+        expect(UtilsStub.loadConfigFile.args[0]).to.deep.equal([path.resolve(__dirname, '../templates')]);
+
         let execCopyArgs = exec._copy.args[0][0];
         expect(execCopyArgs.from).to.equal(path.join(from, 'create', 'component'));
         expect(execCopyArgs.to).to.equal(to);
