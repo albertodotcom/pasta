@@ -9,7 +9,7 @@ let { logger } = require('./logger');
 
 const SCRIPT = `npm install && git init && git add --all && git commit -m "Create scaffold project"`;
 
-class Exec {
+let Exec = {
   _copy(data) {
     let { from, to, transform, outputFileName, excludeTransformPath } = data;
     let flow = [];
@@ -35,7 +35,7 @@ class Exec {
     return flow.reduce(function (soFar, f) {
       return soFar.then(f);
     }, when({ from, to, transform, outputFileName, excludeTransformPath }));
-  }
+  },
 
   new([name, from, destFolder]) {
     let to = path.join(process.cwd(), destFolder || name);
@@ -58,7 +58,7 @@ class Exec {
       process.chdir(to);
       Utils.executeScript(SCRIPT);
     });
-  }
+  },
 
   create([type, name]) {
     // load config file
@@ -96,7 +96,7 @@ class Exec {
     }).catch((err) => {
       logger.info(err);
     });
-  }
-}
+  },
+};
 
-module.exports = new Exec();
+module.exports = Exec;
