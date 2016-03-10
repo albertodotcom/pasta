@@ -8,7 +8,7 @@
   },
   "scripts": {
     "prepublish": "babel src --out-dir lib",
-    "test": "babel-node node_modules/.bin/babel-istanbul cover _mocha -- $(find './test' -name '*-tests.js' -not -path './test/assets/*') && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "test": "mocha --compilers js:babel-core/register $(find './test' -name '*-tests.js' -not -path './test/assets/*')",
     "test-watch": "mocha --compilers js:babel-core/register $(find './test' -name '*-tests.js' -not -path './test/assets/*') --watch"
   },
   "repository": "https://github.com/albertodotcom/pasta",
